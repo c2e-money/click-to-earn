@@ -31,11 +31,9 @@ export default function ClickToEarnUltimate() {
   const [side, setSide] = useState(false);
   const [stats, setStats] = useState({ clk: 0, earn: 0, cpm: 3.0 });
   
-  // Routing Redirection States
   const [rt, setRt] = useState(false), [stage, setStage] = useState(1), [tmr, setTmr] = useState(10), [dest, setDest] = useState('');
   const [isTokenFound, setIsTokenFound] = useState(false);
 
-  // Live Token Parameter Interceptor Gate
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const tok = new URLSearchParams(window.location.search).get('go');
@@ -51,15 +49,12 @@ export default function ClickToEarnUltimate() {
     }
   }, []);
 
-  // Timer Handshake Controller
   useEffect(() => {
     if (rt && tmr > 0) { const r = setTimeout(() => setTmr(tmr - 1), 1000); return () => clearTimeout(r); }
   }, [rt, tmr]);
 
-  // Dynamic Multi-Page Adsterra Injector Core (Page 4 Security Logic Embedded)
   useEffect(() => {
     if (rt) {
-      // 1. POPUNDER SCRIPT INJECTION RULE (Active only on Page 1, 2, 3)
       if (stage !== 4) {
         if (!document.getElementById('ad-popunder-node')) {
           const pop = document.createElement('script'); pop.id = 'ad-popunder-node';
@@ -67,23 +62,20 @@ export default function ClickToEarnUltimate() {
           document.body.appendChild(pop);
         }
       } else {
-        // Automatically kill popunder node on Stage 4 as requested!
         document.getElementById('ad-popunder-node')?.remove();
       }
 
-      // 2. SOCIAL BAR SCRIPT INJECTION (Global across all blocks)
       if (!document.getElementById('ad-social-node')) {
         const soc = document.createElement('script'); soc.id = 'ad-social-node';
-        soc.src = "https://rightyrely.com/25/35/24/253524e0ad362de39e8934daee4f3.js";
+        soc.src = "https://rightyrely.com/25/35/24/253524e061c1d53e48e5610b6dfa52e6.js";
         document.body.appendChild(soc);
       }
 
-      // 3. NATIVE DISPLAY AD LAYER INJECTION
       if (!document.getElementById('ad-native-node')) {
-        window.atoptions = { 'key': 'cf611de77a66f7b9cc6ae3b4ca404da7', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };
-        const nat = document.createElement('script'); nat.id = 'ad-social-node';
-        p.src = `https://www.highperformanceformat.com/cf611de77a66f7b9cc6ae3b4ca404da7/invoke.js`;
-        document.body.appendChild(p);
+        const nat = document.createElement('script'); nat.id = 'ad-native-node';
+        nat.async = true; nat.setAttribute("data-cfasync", "false");
+        nat.src = "https://rightyrely.com/9a3ee810f662f820251422648340bfa6/invoke.js";
+        document.body.appendChild(nat);
       }
     }
   }, [rt, stage]);
@@ -117,22 +109,21 @@ export default function ClickToEarnUltimate() {
     addDoc(collection(db, "links"), obj).catch(e => console.error(e));
   };
 
-  // 12 HIGH-CPM AD DENSITY PLACEMENT STRUCTURAL BLOCK MATRIX
   const SupremeAdPlacementMatrix = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', margin: '14px 0', width: '100%', maxWidth: '468px' }}>
       {[...Array(4)].map((_, i) => (
         <div key={`ban-${i}`} style={{ background: '#0a0915', padding: '8px', borderRadius: '8px', border: '1px solid #1c1a30', display: 'flex', justifyContent: 'center' }}>
-          <iframe src={`//rightyrely.com/watch.html?key=23591d15e448b5bf1900c3bf28352b68`} width="468" height="60" frameBorder="0" scrolling="no" style={{ maxWidth: '100%', border: 'none' }}></iframe>
+          <iframe src="//rightyrely.com/watch.html?key=25e100bfe34eb21a597efa6547c53a2a" width="300" height="250" frameBorder="0" scrolling="no" style={{ maxWidth: '100%', border: 'none' }}></iframe>
         </div>
       ))}
       {[...Array(4)].map((_, i) => (
         <div key={`nat-${i}`} style={{ background: '#0a0915', padding: '12px', borderRadius: '8px', border: '1px solid #1c1a30', textAlign: 'center' }}>
-          <div id="container-cf611de77a66f7b9cc6ae3b4ca404da7"></div>
-          <span style={{ fontSize: '10px', color: '#4b5563' }}>Optimized Native Content Layer #{i+1}</span>
+          <div id="container-9a3ee810f662f820251422648340bfa6"></div>
+          <span style={{ fontSize: '10px', color: '#4b5563' }}>Native Performance Unit #{i+1}</span>
         </div>
       ))}
       {[...Array(4)].map((_, i) => (
-        <button key={`smart-${i}`} onClick={() => window.open("https://rightyrely.com/zf7xraia?key=41a44697420ad362de39e8934daee4f3", '_blank')} style={{ background: 'linear-gradient(90deg, #1e1b4b, #311042)', color: '#38bdf8', padding: '14px', border: '1px solid #4f46e5', borderRadius: '8px', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>⚡ INSTANT CLOUD HIGH-SPEED REPOSITORY SERVERS #00{i+1}</button>
+        <button key={`smart-${i}`} onClick={() => window.open("https://rightyrely.com/t423kum4w?key=c6cfb7985a15d264407b4d6d80a97a0a", '_blank')} style={{ background: 'linear-gradient(90deg, #1e1b4b, #311042)', color: '#38bdf8', padding: '14px', border: '1px solid #4f46e5', borderRadius: '8px', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>⚡ MEDIA REPOSITORY CORE DOWNLOADING PATH #00{i+1}</button>
       ))}
     </div>
   );
@@ -148,23 +139,25 @@ export default function ClickToEarnUltimate() {
         {tmr > 0 ? ( <div>🔄 Processing Traffic Metrics... <b style={{color:'#fbbf24'}}>{tmr}s</b></div> ) : (
           stage === 4 ? (
             <div>
-              <div style={{background:'#1e40af',padding:'12px',borderRadius:'6px',marginBottom:'12px',fontSize:'13px'}}><a href="https://t.me/YOUR_CHANNEL" target="_blank" style={{color:#fff,textDecoration:'none'}}>💬 Join Our Official Telegram Updates Channel</a></div>
+              <div style={{background:'#1e40af',padding:'12px',borderRadius:'6px',marginBottom:'12px',fontSize:'13px'}}><a href="https://t.me/YOUR_CHANNEL" target="_blank" style={{color:'#fff',textDecoration:'none'}}>💬 Join Our Official Telegram Updates Channel</a></div>
               <button className="btn" style={{background:'#10b981',boxShadow:'0 0 15px #10b981'}} onClick={() => window.location.replace(dest.trim().startsWith('http') ? dest.trim() : 'https://' + dest.trim())}>🚀 UNLOCK FINAL TARGET LINK</button>
             </div>
-          ) : ( <button className="btn" onClick={() => { setStage(stage + 1); setTmr(stage + 1 === 4 ? 5 : 8); window.scrollTo({top:0,behavior:'smooth'}); }}>CONTINUE TO NEXT EXECUTABLE STEP ➡️</button> )
+          ) : ( <button className="btn" onClick={() => { setStage(stage + 1); setTmr(stage + 1 === 4 ? 5 : 10); window.scrollTo({top:0,behavior:'smooth'}); }}>CONTINUE TO NEXT EXECUTABLE STEP ➡️</button> )
         )}
       </div>
       
-      {stage !== 4 && <AdPlacementBlockGroup />}
+      {stage !== 4 && <SupremeAdPlacementMatrix />}
     </div>
   );
 
-  if (loading) return <div style={{background:'#04030a',color:'#6366f1',minHeight:'100vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔄 Connecting Click To Earn Hub...</div>;
+  if (isTokenFound) return <div style={{background:'#04030a',color:'#a78bfa',minHeight:'100vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔒 Directing to Traffic Core Verification Instance...</div>;
+
+  if (loading) return <div style={{background:'#04030a',color:'#6366f1',minHeight:'100vh',display:'flex',justify('center'),alignItems:'center',fontFamily:'sans-serif'}}>🔄 Connecting Click To Earn Hub...</div>;
 
   if (!user) return (
     <div className="main-bg font flex-col center p-20">
       <style>{`.main-bg{background:#04030a;min-height:100vh;color:#fff;}.font{font-family:sans-serif;}.flex-col{display:flex;flex-direction:column;}.center{align-items:center;justify-content:center;}.card{background:#09081d;padding:30px;border-radius:20px;border:1px solid #1a153a;width:100%;max-width:380px;box-sizing:border-box;}.btn{width:100%;padding:12px;background:#4f46e5;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;}.inp{width:100%;padding:12px;background:#04030a;border:1px solid #231c4f;border-radius:8px;color:#fff;box-sizing:border-box;margin-bottom:12px;outline:none;}`}</style>
-      <h1 style={{fontWeight:'900',fontSize:'26px',marginBottom:'20px',letterSpacing:'1px'}}>💸 CLICK TO EARN</h1>
+      <h1 style={{fontWeight:'900',fontSize:'26px',marginBottom:'20px',letterSpacing:'1px',textAlign:'center'}}>💸 CLICK TO EARN</h1>
       <div className="card">
         <h2 style={{textAlign:'center',color:'#a78bfa',margin:'0 0 20px 0',fontSize:'18px'}}>{isUp ? "Register Account" : "Identity Authorization Login"}</h2>
         <input className="inp" type="email" placeholder="Email Address" value={email} onChange={e => setEmail(e.target.value)} />
@@ -181,12 +174,12 @@ export default function ClickToEarnUltimate() {
       
       <div style={{background:'#090818',padding:'14px 20px',borderBottom:'1px solid #14122d',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
-          <button onClick={() => setSide(true)} style={{background:'#100e2b',border:'none',color:'#fff',padding:'8px 12px',borderRadius:'6px',cursor:'pointer'}}>☰</button>
+          <button onClick={() => setSide(true)} style={{background:'#100e2b',border:'none',color:#fff,padding:'8px 12px',borderRadius:'6px',cursor:'pointer'}}>☰</button>
           <span style={{fontWeight:'800',fontSize:'16px',letterSpacing:'0.5px'}}>💸 CLICK TO EARN</span>
         </div>
       </div>
 
-      <div style={{position:'fixed',top:0,left:side?0:'-280px',width:'250px',height:'100vh',background:#09081a,borderRight:'1px solid #14122d',transition:'0.3s ease',zIndex:999,padding:'20px',boxSizing:'border-box',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
+      <div style={{position:'fixed',top:0,left:side?0:'-280px',width:'250px',height:'100vh',background:'#09081a',borderRight:'1px solid #14122d',transition:'0.3s ease',zIndex:999,padding:'20px',boxSizing:'border-box',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
         <div>
           <h3 style={{color:'#818cf8',margin:'0 0 20px 0',fontSize:'16px'}}>CLICK TO EARN</h3>
           <div style={{display:'flex',flexDirection:'column',gap:'6px'}}>
@@ -241,4 +234,4 @@ export default function ClickToEarnUltimate() {
       )}
     </div>
   );
-}
+        }
