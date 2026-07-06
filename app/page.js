@@ -228,5 +228,5 @@ export default function ClickToEarnUltimate() {
       )}
     </div>
   );
-    }
+  }
     
