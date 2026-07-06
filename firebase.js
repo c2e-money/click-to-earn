@@ -1,19 +1,20 @@
-import { initializeApp, getApps } from "firebase/app";
+// firebase.js
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD3Yl0BR4o6qEX6MeXYjX6Qjlr5BCid5C8",
-  authDomain: "my-website-242fc.firebaseapp.com",
-  projectId: "my-website-242fc",
-  storageBucket: "my-website-242fc.firebasestorage.app",
-  messagingSenderId: "78108710064",
-  appId: "1:78108710064:web:7b5e79f33721fbc7f71775"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
-// Next.js runtime compile check loop
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+// Initialize Firebase safely for Next.js SSR
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-
+export { auth, db };
