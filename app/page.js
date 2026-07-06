@@ -4,7 +4,7 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc, setDoc, getDoc } from 'firebase/firestore';
 
-// 🔥 YOUR EXACT FIREBASE INSTANCE INTEGRATION
+// 🔥 YOUR FIREBASE CONFIGURATION
 const firebaseConfig = {
   apiKey: "AIzaSyD3Yl0BR4o6qEX6MeXYjX6Qjlr5BCid5C8",
   authDomain: "my-website-242fc.firebaseapp.com",
@@ -30,7 +30,7 @@ export default function ClickToEarnUltimate() {
   const [userLinks, setUserLinks] = useState([]);
   const [globalNetworkStats, setGlobalNetworkStats] = useState({ clicks: 0, earnings: 0.00, cpm: 9.00 });
 
-  // 👑 EXTRA ADMIN SYSTEM STATES (Live Sync with Database)
+  // 👑 ADMIN CONTROLS STATES
   const [adminCpm, setAdminCpm] = useState(9.00);
   const [adminAdDomain, setAdminAdDomain] = useState("rightyrely.com");
   const [adminBannerKey, setAdminBannerKey] = useState("23591d15e448b5bf1900c3bf28352b68");
@@ -38,13 +38,13 @@ export default function ClickToEarnUltimate() {
   const [adminSmartLink, setAdminSmartLink] = useState("https://rightyrely.com/zf7xraia?key=41a44697420ad362de39e8934daee4f3");
   const [allSystemLinks, setAllSystemLinks] = useState([]);
 
-  // 💸 Multi-Stage Setup Routing Engine
+  // 💸 Multi-Stage Funnel Routing States
   const [isRoutingActive, setIsRoutingActive] = useState(false);
   const [currentStage, setCurrentStage] = useState(1);
   const [stageTimer, setStageTimer] = useState(10);
   const [lockedDestinationUrl, setLockedDestinationUrl] = useState('');
 
-  // Sync Admin Global Dynamic Control Map
+  // Sync Admin Remote Configuration Settings
   useEffect(() => {
     const fetchAdminSettings = async () => {
       try {
@@ -58,12 +58,12 @@ export default function ClickToEarnUltimate() {
           setAdminNativeKey(s.nativeKey || "cf611de77a66f7b9cc6ae3b4ca404da7");
           setAdminSmartLink(s.smartLink || "https://rightyrely.com/zf7xraia?key=41a44697420ad362de39e8934daee4f3");
         }
-      } catch (e) { console.log("Admin configs initiated defaults."); }
+      } catch (e) { console.log("Default admin parameters loaded."); }
     };
     fetchAdminSettings();
   }, [isRoutingActive, activeTab]);
 
-  // Capture Routing Link Token
+  // Handle Dynamic Outbound Parameter Token Injection
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
@@ -82,14 +82,14 @@ export default function ClickToEarnUltimate() {
               setStageTimer(10);
               await updateDoc(doc(db, "links", docNode.id), { clicks: (nodeData.clicks || 0) + 1 });
             }
-          } catch (err) { console.error("Redirection failure check."); }
+          } catch (err) { console.error("Database tracing mapping failure."); }
         };
         fetchSecureLinkNode();
       }
     }
   }, []);
 
-  // Timer Countdown Controller 
+  // Strict Matrix Countdowns Control
   useEffect(() => {
     if (isRoutingActive && stageTimer > 0) {
       const runCount = setTimeout(() => setStageTimer(stageTimer - 1), 1000);
@@ -97,7 +97,7 @@ export default function ClickToEarnUltimate() {
     }
   }, [isRoutingActive, stageTimer]);
 
-  // Global Dynamic Script Matrix Control
+  // Live Script Runtime Hooks For Adsterra Injections
   useEffect(() => {
     if (isRoutingActive) {
       if (currentStage !== 4 && !document.getElementById('ad-popunder-node')) {
@@ -119,12 +119,11 @@ export default function ClickToEarnUltimate() {
     }
   }, [isRoutingActive, currentStage, adminAdDomain]);
 
-  // Auth Status Watcher
+  // Firebase Authentication Observer Listener
   useEffect(() => {
     const checkState = onAuthStateChanged(auth, (curr) => {
       if (curr) {
         setUser(curr);
-        // Change this email string to make anyone your system's supreme admin
         if (curr.email === "admin@clicktoearn.in" || curr.email.includes("admin")) {
           setIsAdmin(true);
           fetchAllLinksForAdmin();
@@ -136,7 +135,7 @@ export default function ClickToEarnUltimate() {
       }
     });
     return () => checkState();
-  }, []);
+  }, [adminCpm]);
 
   const fetchNetworkLogs = async (currentUser) => {
     try {
@@ -155,7 +154,7 @@ export default function ClickToEarnUltimate() {
         cpm: adminCpm,
         earnings: (clicksCounter / 1000) * adminCpm
       });
-    } catch (e) { console.log("Logs execution issue."); }
+    } catch (e) { console.log("Logs execution error."); }
   };
 
   const fetchAllLinksForAdmin = async () => {
@@ -164,7 +163,7 @@ export default function ClickToEarnUltimate() {
       const temp = [];
       snap.forEach((doc) => { temp.push({ id: doc.id, ...doc.data() }); });
       setAllSystemLinks(temp);
-    } catch (e) { console.log("Admin list extraction error."); }
+    } catch (e) { console.log("Admin listing fetch error."); }
   };
 
   const handleAuthEngine = async () => {
@@ -195,27 +194,27 @@ export default function ClickToEarnUltimate() {
       await addDoc(collection(db, "links"), linkPayload);
       if (user) fetchNetworkLogs(user);
       setLongUrl('');
-      alert("Link Node Encrypted successfully! View in All Links console.");
+      alert("Link Node Encrypted successfully!");
       setActiveTab('manage');
-    } catch (e) { alert("Database routing failure."); }
+    } catch (e) { alert("Database injection error."); }
   };
 
   const saveAdminSettings = async () => {
     try {
       await setDoc(doc(db, "system", "settings"), {
-        cpm: adminCpm,
+        cpm: Number(adminCpm),
         adDomain: adminAdDomain,
         bannerKey: adminBannerKey,
         nativeKey: adminNativeKey,
         smartLink: adminSmartLink
       });
-      alert("👑 Supreme Network Rules updated live across database!");
+      alert("👑 Supreme Network Rules updated live!");
       fetchAllLinksForAdmin();
-    } catch (e) { alert("Write access violation."); }
+    } catch (e) { alert("Write access error."); }
   };
 
   const advanceRoutingStage = (nextLevel) => {
-    if (stageTimer > 0) return alert("Complete security evaluation block sequence above first!");
+    if (stageTimer > 0) return alert("Complete security block countdown!");
     setCurrentStage(nextLevel);
     setStageTimer(nextLevel === 4 ? 5 : 8); 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -231,13 +230,12 @@ export default function ClickToEarnUltimate() {
     }
   };
 
-  // Dynamic 12 Positions Maximum CPM Matrix Layer Components
   const AdPlacementBlockGroup = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', margin: '15px 0', width: '100%' }}>
       {[...Array(4)].map((_, idx) => (
         <div key={`nat-${idx}`} style={{ background: '#111c2e', border: '1px solid #1f2e4d', padding: '12px', borderRadius: '6px', textAlign: 'center' }}>
           <div id={`container-${adminNativeKey}`}></div>
-          <span style={{ fontSize: '9px', color: '#475d82' }}>Live Native Optimization Engine Block #{idx+1}</span>
+          <span style={{ fontSize: '9px', color: '#475d82' }}>Live Native Content Module #{idx+1}</span>
         </div>
       ))}
       {[...Array(4)].map((_, idx) => (
@@ -248,7 +246,7 @@ export default function ClickToEarnUltimate() {
       ))}
       {[...Array(4)].map((_, idx) => (
         <div key={`smart-${idx}`} onClick={() => window.open(adminSmartLink, '_blank')} style={{ background: 'linear-gradient(90deg, #1e293b, #0f172a)', border: '1px solid #38bdf8', padding: '14px', borderRadius: '8px', cursor: 'pointer', textAlign: 'center', color: '#38bdf8', fontWeight: '700', fontSize: '13px' }}>
-          ⚡ CLOUD MEDIA REPOSITORY SERVERS #00{idx+1} [TAP TO SYNC]
+          ⚡ SECURE MEDIA ACCESS POINT #00{idx+1} [TAP TO RESOLVE]
         </div>
       ))}
     </div>
@@ -266,12 +264,11 @@ export default function ClickToEarnUltimate() {
         <div style={{ background: '#0f172a', padding: '24px', borderRadius: '12px', border: '1px solid #1e293b', width: '100%', maxWidth: '480px', textAlign: 'center', margin: '20px 0' }}>
           {stageTimer > 0 ? (
             <div style={{ fontSize: '16px', fontWeight: '600' }}>
-              🔄 Analyzing Traffic Integrity Constraints... <span style={{ color: '#f59e0b' }}>{stageTimer}s</span>
+              🔄 Analyzing Profile Structural Attributes... <span style={{ color: '#f59e0b' }}>{stageTimer}s</span>
             </div>
           ) : (
             currentStage === 4 ? (
               <div>
-                {/* Clean Telegram replacement layer without annoying loops */}
                 <div style={{ background: '#0284c7', padding: '16px', borderRadius: '8px', color: '#fff', marginBottom: '16px', fontWeight: '600' }}>
                   💬 Join Our Official Updates Telegram Channel!<br/>
                   <a href="https://t.me/YOUR_CHANNEL" target="_blank" style={{ color: '#fff', textDecoration: 'underline', fontSize: '13px' }}>Click Here To Join Portal</a>
@@ -282,7 +279,7 @@ export default function ClickToEarnUltimate() {
               </div>
             ) : (
               <div>
-                <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '12px' }}>Verification metrics passed. Scroll down and press proceed button.</p>
+                <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '12px' }}>Verification constraints cleared. Scroll down and press proceed.</p>
                 <button onClick={() => advanceRoutingStage(currentStage + 1)} style={{ width: '100%', padding: '14px', background: '#38bdf8', color: '#030712', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}>
                   CONTINUE TO NEXT EXECUTABLE STEP ➡️
                 </button>
@@ -348,7 +345,7 @@ export default function ClickToEarnUltimate() {
                   <div style={{ fontSize: '13px', color: '#38bdf8', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontWeight: '600' }}>{link.shortUrl}</div>
                   <div style={{ fontSize: '11px', color: '#475d82', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{link.originalUrl}</div>
                 </div>
-                <button onClick={() => { navigator.clipboard.writeText(link.shortUrl); alert("Node Copied to Dashboard Clipboard!"); }} style={{ background: '#38bdf8', color: '#000', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Copy</button>
+                <button onClick={() => { navigator.clipboard.writeText(link.shortUrl); alert("Node Copied!"); }} style={{ background: '#38bdf8', color: '#000', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Copy</button>
               </div>
             ))}
           </div>
@@ -366,4 +363,7 @@ export default function ClickToEarnUltimate() {
               <button onClick={() => setIsSignUp(!isSignUp)} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '12px', width: '100%', marginTop: '12px', cursor: 'pointer' }}>{isSignUp ? "Log In Instead" : "Deploy New Account System"}</button>
             </div>
           ) : (
-            <div style={{ background: '#0f172a', padding
+            <div style={{ background: '#0f172a', padding: '24px', borderRadius: '12px', border: '1px solid #1e293b', textAlign: 'center' }}>
+              <h4>Active Verified Signature Key</h4>
+              <p style={{ color: '#64748b', fontSize: '13px', margin: '6px 0 20px 0' }}>{user.email}</p>
+              <button onClick={() => sign
