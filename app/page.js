@@ -30,19 +30,31 @@ export default function ClickToEarnUltimate() {
   const [links, setLinks] = useState([]);
   const [side, setSide] = useState(false);
   const [stats, setStats] = useState({ clk: 0, earn: 0, cpm: 3.0 });
+  
+  // Redirection Engine Hook States
   const [rt, setRt] = useState(false), [stage, setStage] = useState(1), [tmr, setTmr] = useState(10), [dest, setDest] = useState('');
+  const [isTokenFound, setIsTokenFound] = useState(false);
   const [admCpm, setAdmCpm] = useState(3.0), [admDom, setAdmDom] = useState("rightyrely.com"), [admKey, setAdmKey] = useState("23591d15e448b5bf1900c3bf28352b68");
 
+  // 1. ABSOLUTE HIGHEST PRIORITY: Parameter Token Presence Interceptor
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const tok = new URLSearchParams(window.location.search).get('go');
       if (tok) {
+        setIsTokenFound(true); // Locks dashboard execution blocks immediately
         getDocs(query(collection(db, "links"), where("alias", "==", tok))).then(snap => {
           if (!snap.empty) {
-            const d = snap.docs[0]; setDest(d.data().originalUrl); setRt(true); setStage(1); setTmr(10);
+            const d = snap.docs[0]; 
+            setDest(d.data().originalUrl); 
+            setRt(true); 
+            setStage(1); 
+            setTmr(10);
             updateDoc(doc(db, "links", d.id), { clicks: (d.data().clicks || 0) + 1 });
+          } else {
+            alert("Invalid or expired short link node!");
+            window.location.replace(window.location.origin);
           }
-        });
+        }).catch(() => setIsTokenFound(false));
       }
     }
   }, []);
@@ -96,6 +108,9 @@ export default function ClickToEarnUltimate() {
     addDoc(collection(db, "links"), obj).catch(e => console.error(e));
   };
 
+  // ================= LAYER Rendering Sequence Logic =================
+
+  // 1. REDIRECTION AD FILTER ROUTE (Bypasses Auth & Loading States completely)
   if (rt) return (
     <div className="main-bg font flex-col center p-20">
       <style>{`.main-bg{background:#04030a;min-height:100vh;color:#fff;}.font{font-family:sans-serif;}.flex-col{display:flex;flex-direction:column;}.center{align-items:center;justify-content:center;}.p-20{padding:20px;}.card{background:#0e0b20;padding:25px;border-radius:16px;border:1px solid #1c1736;width:100%;max-width:420px;text-align:center;}.btn{width:100%;padding:14px;background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;}.inp{width:100%;padding:12px;background:#04030a;border:1px solid #231c4f;border-radius:8px;color:#fff;box-sizing:border-box;margin-bottom:12px;outline:none;}`}</style>
@@ -114,8 +129,13 @@ export default function ClickToEarnUltimate() {
     </div>
   );
 
+  // If URL parameter process token is active, freeze layout components below
+  if (isTokenFound) return <div style={{background:'#04030a',color:'#a78bfa',minHeight:'100vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔒 Directing to Traffic Core Verification Instance...</div>;
+
+  // 2. Core Initializing/Sync State
   if (loading) return <div style={{background:'#04030a',color:'#6366f1',minHeight:'100vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔄 Syncing System Core...</div>;
 
+  // 3. Forced Authentication Wall Frame Layout
   if (!user) return (
     <div className="main-bg font flex-col center p-20">
       <style>{`.main-bg{background:#04030a;min-height:100vh;color:#fff;}.font{font-family:sans-serif;}.flex-col{display:flex;flex-direction:column;}.center{align-items:center;justify-content:center;}.card{background:#09081d;padding:30px;border-radius:20px;border:1px solid #1a153a;width:100%;max-width:380px;box-sizing:border-box;}.btn{width:100%;padding:12px;background:#4f46e5;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;}.inp{width:100%;padding:12px;background:#04030a;border:1px solid #231c4f;border-radius:8px;color:#fff;box-sizing:border-box;margin-bottom:12px;outline:none;}`}</style>
@@ -130,6 +150,7 @@ export default function ClickToEarnUltimate() {
     </div>
   );
 
+  // 4. Secure Main Content Render View
   return (
     <div style={{backgroundColor:'#04030a',color:'#f1f5f9',minHeight:'100vh',fontFamily:'sans-serif'}}>
       <style>{`.box{background:#0a081d;padding:12px;border-radius:10px;border:1px solid #141130;text-align:center;}.inp{width:100%;padding:10px;background:#050311;border:1px solid #191438;border-radius:8px;color:#fff;box-sizing:border-box;margin-bottom:10px;outline:none;}.btn{width:100%;padding:12px;background:linear-gradient(90deg,#38bdf8,#a855f7);color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;}`}</style>
@@ -209,5 +230,5 @@ export default function ClickToEarnUltimate() {
       )}
     </div>
   );
-               }
-    
+  }
+  
