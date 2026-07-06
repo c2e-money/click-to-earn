@@ -4,7 +4,7 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc, setDoc, getDoc } from 'firebase/firestore';
 
-const firebaseConfig = {
+const cfg = {
   apiKey: "AIzaSyD3Yl0BR4o6qEX6MeXYjX6Qjlr5BCid5C8",
   authDomain: "my-website-242fc.firebaseapp.com",
   projectId: "my-website-242fc",
@@ -12,46 +12,34 @@ const firebaseConfig = {
   messagingSenderId: "78108710064",
   appId: "1:78108710064:web:7b5e79f33721fbc7f71775"
 };
-
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app = getApps().length > 0 ? getApp() : initializeApp(cfg);
+const auth = getAuth(app), db = getFirestore(app);
 
 export default function ClickToEarnUltimate() {
-  const [activeTab, setActiveTab] = useState('home');
+  const [tab, setTab] = useState('home');
   const [user, setUser] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [longUrl, setLongUrl] = useState('');
+  const [pass, setPass] = useState('');
+  const [isUp, setIsUp] = useState(false);
+  const [url, setUrl] = useState('');
   const [alias, setAlias] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [justShortenedUrl, setJustShortenedUrl] = useState('');
-  const [userLinks, setUserLinks] = useState([]);
-  const [allSystemLinks, setAllSystemLinks] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [globalNetworkStats, setGlobalNetworkStats] = useState({ clicks: 0, earnings: 0, cpm: 3.00 });
-
-  const [adminCpm, setAdminCpm] = useState(3.00);
-  const [adminAdDomain, setAdminAdDomain] = useState("rightyrely.com");
-  const [adminBannerKey, setAdminBannerKey] = useState("23591d15e448b5bf1900c3bf28352b68");
-  const [adminSmartLink, setAdminSmartLink] = useState("https://rightyrely.com/zf7xraia?key=41a44697420ad362de39e8934daee4f3");
-
-  const [isRoutingActive, setIsRoutingActive] = useState(false);
-  const [currentStage, setCurrentStage] = useState(1);
-  const [stageTimer, setStageTimer] = useState(10);
-  const [lockedDestinationUrl, setLockedDestinationUrl] = useState('');
+  const [expiry, setExpiry] = useState('');
+  const [shortened, setShortened] = useState('');
+  const [links, setLinks] = useState([]);
+  const [side, setSide] = useState(false);
+  const [stats, setStats] = useState({ clk: 0, earn: 0, cpm: 3.0 });
+  const [rt, setRt] = useState(false), [stage, setStage] = useState(1), [tmr, setTmr] = useState(10), [dest, setDest] = useState('');
+  const [admCpm, setAdmCpm] = useState(3.0), [admDom, setAdmDom] = useState("rightyrely.com"), [admKey, setAdmKey] = useState("23591d15e448b5bf1900c3bf28352b68");
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const token = new URLSearchParams(window.location.search).get('go');
-      if (token) {
-        getDocs(query(collection(db, "links"), where("alias", "==", token))).then(snap => {
+      const tok = new URLSearchParams(window.location.search).get('go');
+      if (tok) {
+        getDocs(query(collection(db, "links"), where("alias", "==", tok))).then(snap => {
           if (!snap.empty) {
-            const d = snap.docs[0]; setLockedDestinationUrl(d.data().originalUrl);
-            setIsRoutingActive(true); setCurrentStage(1); setStageTimer(10);
+            const d = snap.docs[0]; setDest(d.data().originalUrl); setRt(true); setStage(1); setTmr(10);
             updateDoc(doc(db, "links", d.id), { clicks: (d.data().clicks || 0) + 1 });
           }
         });
@@ -62,213 +50,162 @@ export default function ClickToEarnUltimate() {
   useEffect(() => {
     getDoc(doc(db, "system", "settings")).then(s => {
       if (s.exists()) {
-        const d = s.data(); setAdminCpm(Number(d.cpm || 3)); setAdminAdDomain(d.adDomain || "rightyrely.com");
-        setAdminBannerKey(d.bannerKey || "23591d15e448b5bf1900c3bf28352b68"); setAdminSmartLink(d.smartLink || "");
+        const d = s.data(); setAdmCpm(Number(d.cpm || 3)); setAdmDom(d.adDomain || "rightyrely.com"); setAdmKey(d.bannerKey || "23591d15e448b5bf1900c3bf28352b68");
       }
     });
-  }, [isRoutingActive, activeTab]);
+  }, [rt, tab]);
 
   useEffect(() => {
-    if (isRoutingActive && stageTimer > 0) {
-      const run = setTimeout(() => setStageTimer(stageTimer - 1), 1000);
-      return () => clearTimeout(run);
-    }
-  }, [isRoutingActive, stageTimer]);
+    if (rt && tmr > 0) { const r = setTimeout(() => setTmr(tmr - 1), 1000); return () => clearTimeout(r); }
+  }, [rt, tmr]);
 
   useEffect(() => {
-    if (isRoutingActive) {
-      if (currentStage !== 4 && !document.getElementById('ad-pop')) {
-        const p = document.createElement('script'); p.id = 'ad-pop';
-        p.src = `https://${adminAdDomain}/f0/02/71/f002719497291bd1aae6841c87eba4bf.js`; document.body.appendChild(p);
-      } else if (currentStage === 4) document.getElementById('ad-pop')?.remove();
-    }
-  }, [isRoutingActive, currentStage, adminAdDomain]);
+    if (rt && stage !== 4 && !document.getElementById('ad-p')) {
+      const p = document.createElement('script'); p.id = 'ad-p'; p.src = `https://${admDom}/f0/02/71/f002719497291bd1aae6841c87eba4bf.js`; document.body.appendChild(p);
+    } else if (stage === 4) document.getElementById('ad-p')?.remove();
+  }, [rt, stage, admDom]);
 
-  const loadUserHistoryData = (uid) => {
+  const loadLogs = (uid) => {
     getDocs(query(collection(db, "links"), where("userId", "==", uid))).then(snap => {
-      let clk = 0; const tmp = []; 
-      snap.forEach(d => { tmp.push({id:d.id, ...d.data()}); clk += (d.data().clicks || 0); });
-      setUserLinks(tmp); 
-      setGlobalNetworkStats({ clicks: clk, cpm: adminCpm, earnings: (clk / 1000) * adminCpm });
+      let c = 0; const t = []; snap.forEach(d => { t.push({id:d.id, ...d.data()}); c += (d.data().clicks || 0); });
+      setLinks(t); setStats({ clk: c, cpm: admCpm, earn: (c / 1000) * admCpm });
     });
   };
 
   useEffect(() => {
-    return onAuthStateChanged(auth, (curr) => {
-      if (curr) {
-        setUser(curr); 
-        if (curr.email.includes("admin")) { 
-          setIsAdmin(true); 
-          getDocs(collection(db, "links")).then(s => setAllSystemLinks(s.docs.map(d => ({id:d.id, ...d.data()})))); 
-        }
-        loadUserHistoryData(curr.uid);
+    return onAuthStateChanged(auth, (u) => {
+      if (u) {
+        setUser(u); if (u.email.includes("admin")) setIsAdmin(true); loadLogs(u.uid);
       } else { setUser(null); setIsAdmin(false); }
-      setAuthLoading(false);
+      setLoading(false);
     });
-  }, [adminCpm]);
+  }, [admCpm]);
 
   const handleAuth = async () => {
-    if (!email || !password) return alert("Missing fields!");
-    try { if (isSignUp) { await createUserWithEmailAndPassword(auth, email, password); setIsSignUp(false); } else { await signInWithEmailAndPassword(auth, email, password); } } catch (e) { alert(e.message); }
+    if (!email || !pass) return alert("Fill fields!");
+    try { if (isUp) { await createUserWithEmailAndPassword(auth, email, pass); setIsUp(false); } else { await signInWithEmailAndPassword(auth, email, pass); } } catch (e) { alert(e.message); }
   };
 
   const handleShorten = async () => {
-    if (!longUrl) return alert("URL Missing!");
-    if (!user) return alert("Session expired, please login again!");
-    
-    const finalAlias = alias.trim() || Math.random().toString(36).substring(2, 7);
-    const generatedPath = `${window.location.origin}?go=${finalAlias}`;
-    
-    const newLinkObj = { 
-      userId: user.uid, 
-      originalUrl: longUrl, 
-      shortUrl: generatedPath, 
-      alias: finalAlias, 
-      expiry: expiryDate, 
-      clicks: 0,
-      createdAt: new Date().toISOString()
-    };
-
-    // 1. Save to cloud database permanently
-    await addDoc(collection(db, "links"), newLinkObj);
-    
-    // 2. Instant Local State Updates (No refresh needed)
-    setJustShortenedUrl(generatedPath);
-    setUserLinks(prev => [newLinkObj, ...prev]);
-    
-    // 3. Clear boxes instantly
-    setLongUrl(''); setAlias(''); setExpiryDate('');
+    if (!url) return alert("Enter URL!");
+    const al = alias.trim() || Math.random().toString(36).substring(2, 7);
+    const gen = `${window.location.origin}?go=${al}`;
+    const obj = { userId: user.uid, originalUrl: url, shortUrl: gen, alias: al, expiry, clicks: 0 };
+    await addDoc(collection(db, "links"), obj);
+    setShortened(gen); setLinks(p => [obj, ...p]); setUrl(''); setAlias(''); setExpiry('');
   };
 
-  const AdIframeBlock = () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', margin: '10px 0', width: '100%', maxWidth: '468px' }}>
-      {[...Array(2)].map((_, i) => (
-        <div key={i} style={{ background: '#0a0915', padding: '8px', borderRadius: '8px', border: '1px solid #1c1a30', display: 'flex', justifyContent: 'center' }}>
-          <iframe src={`//${adminAdDomain}/watch.html?key=${adminBannerKey}`} width="468" height="60" frameBorder="0" scrolling="no" style={{ maxWidth: '100%', border: 'none' }}></iframe>
-        </div>
-      ))}
+  if (rt) return (
+    <div className="main-bg font flex-col center p-20">
+      <style>{`.main-bg{background:#04030a;min-height:100vh;color:#fff;}.font{font-family:sans-serif;}.flex-col{display:flex;flex-direction:column;}.center{align-items:center;justify-content:center;}.p-20{padding:20px;}.card{background:#0e0b20;padding:25px;border-radius:16px;border:1px solid #1c1736;width:100%;max-width:420px;text-align:center;}.btn{width:100%;padding:14px;background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;}.inp{width:100%;padding:12px;background:#04030a;border:1px solid #231c4f;border-radius:8px;color:#fff;box-sizing:border-box;margin-bottom:12px;outline:none;}`}</style>
+      <div style={{padding:'6px 12px',borderRadius:'20px',background:'#0e0b20',color:'#a78bfa',fontSize:'12px',border:'1px solid #1f1938',marginBottom:'15px'}}>🔒 Security Verification Node • Stage {stage}/4</div>
+      {stage !== 4 && <div style={{margin:'10px 0'}}><iframe src={`//${admDom}/watch.html?key=${admKey}`} width="468" height="60" frameBorder="0" scrolling="no" style={{maxWidth:'100%',background:'#0a0915',borderRadius:'8px'}}></iframe></div>}
+      <div className="card">
+        {tmr > 0 ? ( <div>🔄 Processing Engine Protocols... <b style={{color:'#fbbf24'}}>{tmr}s</b></div> ) : (
+          stage === 4 ? (
+            <div>
+              <div style={{background:'#1e40af',padding:'12px',borderRadius:'6px',marginBottom:'12px',fontSize:'13px'}}><a href="https://t.me/YOUR_CHANNEL" target="_blank" style={{color:'#fff',textDecoration:'none'}}>💬 Join Telegram Updates Channel</a></div>
+              <button className="btn" style={{background:'#10b981'}} onClick={() => window.location.replace(dest.trim().startsWith('http') ? dest.trim() : 'https://' + dest.trim())}>🚀 UNLOCK TARGET DESTINATION</button>
+            </div>
+          ) : ( <button className="btn" onClick={() => { setStage(stage + 1); setTmr(stage + 1 === 4 ? 5 : 8); }}>PROCEED NEXT STEP ➡️</button> )
+        )}
+      </div>
     </div>
   );
 
-  if (isRoutingActive) {
-    return (
-      <div style={{ background: '#04030a', color: '#fff', minHeight: '100vh', padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: 'sans-serif' }}>
-        <div style={{ padding: '6px 12px', borderRadius: '20px', background: '#0e0b20', color: '#a78bfa', fontSize: '12px', border: '1px solid #1f1938' }}>🔒 Security Node Check • Stage {currentStage}/4</div>
-        {currentStage !== 4 && <AdIframeBlock />}
-        <div style={{ background: '#0e0b20', padding: '25px', borderRadius: '16px', border: '1px solid #1c1736', width: '100%', maxWidth: '420px', textAlign: 'center', margin: '20px 0' }}>
-          {stageTimer > 0 ? ( <div>🔄 Processing Engine Protocols... <b style={{ color: '#fbbf24' }}>{stageTimer}s</b></div> ) : (
-            currentStage === 4 ? (
-              <div>
-                <div style={{ background: '#1e40af', padding: '12px', borderRadius: '6px', marginBottom: '12px', fontSize: '13px' }}><a href="https://t.me/YOUR_CHANNEL" target="_blank" style={{ color: '#fff', textDecoration: 'none' }}>💬 Join Telegram Updates Channel</a></div>
-                <button onClick={() => window.location.replace(lockedDestinationUrl.trim().startsWith('http') ? lockedDestinationUrl.trim() : 'https://' + lockedDestinationUrl.trim())} style={{ width: '100%', padding: '14px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '800', cursor: 'pointer' }}>🚀 UNLOCK TARGET DESTINATION LINK</button>
-              </div>
-            ) : ( <button onClick={() => { setCurrentStage(currentStage + 1); setStageTimer(currentStage + 1 === 4 ? 5 : 8); }} style={{ width: '100%', padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>PROCEED CORE STEP ➡️</button> )
-          )}
-        </div>
-        {currentStage !== 4 && <AdIframeBlock />}
-      </div>
-    );
-  }
+  if (loading) return <div style={{background:'#04030a',color:'#6366f1',minHeight:100+'vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔄 Syncing System Core...</div>;
 
-  if (authLoading) return <div style={{ background: '#04030a', color: '#6366f1', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'sans-serif' }}>🔄 Loading Matrix...</div>;
-
-  if (!user) {
-    return (
-      <div style={{ backgroundColor: '#04030a', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', fontFamily: 'sans-serif', padding: '0 16px' }}>
-        <h1 style={{ fontWeight: '900', color: '#fff', fontSize: '26px', marginBottom: '20px', letterSpacing: '1px' }}>💸 CLICK TO EARN</h1>
-        <div style={{ background: '#09081d', padding: '30px', borderRadius: '20px', border: '1px solid #1a153a', width: '100%', maxWidth: '380px', boxSizing: 'border-box' }}>
-          <h2 style={{ textAlign: 'center', color: '#a78bfa', margin: '0 0 20px 0', fontSize: '18px' }}>{isSignUp ? "Register Account Node" : "Identity Authorization Login"}</h2>
-          <input type="email" placeholder="Email Address" style={{ width: '100%', padding: '12px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '12px', boxSizing: 'border-box' }} value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input type="password" placeholder="Password" style={{ width: '100%', padding: '12px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '20px', boxSizing: 'border-box' }} value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button onClick={handleAuth} style={{ width: '100%', padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>{isSignUp ? "Sign Up Node" : "Sign In Router"}</button>
-          <p onClick={() => setIsSignUp(!isSignUp)} style={{ color: '#64748b', fontSize: '12px', textAlign: 'center', marginTop: '15px', cursor: 'pointer' }}>{isSignUp ? "Switch to Login" : "Create New Workspace Account"}</p>
-        </div>
+  if (!user) return (
+    <div className="main-bg font flex-col center p-20">
+      <style>{`.main-bg{background:#04030a;min-height:100vh;color:#fff;}.font{font-family:sans-serif;}.flex-col{display:flex;flex-direction:column;}.center{align-items:center;justify-content:center;}.card{background:#09081d;padding:30px;border-radius:20px;border:1px solid #1a153a;width:100%;max-width:380px;box-sizing:border-box;}.btn{width:100%;padding:12px;background:#4f46e5;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;}.inp{width:100%;padding:12px;background:#04030a;border:1px solid #231c4f;border-radius:8px;color:#fff;box-sizing:border-box;margin-bottom:12px;outline:none;}`}</style>
+      <h1 style={{fontWeight:'900',fontSize:'26px',marginBottom:'20px',letterSpacing:'1px'}}>💸 CLICK TO EARN</h1>
+      <div className="card">
+        <h2 style={{textAlign:'center',color:'#a78bfa',margin:'0 0 20px 0',fontSize:'18px'}}>{isUp ? "Register Account" : "Identity Authorization Login"}</h2>
+        <input className="inp" type="email" placeholder="Email Address" value={email} onChange={e => setEmail(e.target.value)} />
+        <input className="inp" type="password" placeholder="Password" value={pass} onChange={e => setPass(e.target.value)} />
+        <button className="btn" onClick={handleAuth}>{isUp ? "Sign Up Node" : "Sign In Router"}</button>
+        <p onClick={() => setIsUp(!isUp)} style={{color:'#64748b',fontSize:'12px',textAlign:'center',marginTop:'15px',cursor:'pointer'}}>{isUp ? "Switch to Login" : "Create New Workspace Account"}</p>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
-    <div style={{ backgroundColor: '#04030a', color: '#f1f5f9', minHeight: '100vh', fontFamily: 'sans-serif' }}>
-      <div style={{ background: '#090818', padding: '14px 20px', borderBottom: '1px solid #14122d', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <button onClick={() => setSidebarOpen(true)} style={{ background: '#100e2b', border: 'none', color: '#fff', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer' }}>☰</button>
-          <span style={{ fontWeight: '800', color: '#fff', fontSize: '16px', letterSpacing: '0.5px' }}>💸 CLICK TO EARN</span>
+    <div style={{backgroundColor:'#04030a',color:'#f1f5f9',minHeight:'100vh',fontFamily:'sans-serif'}}>
+      <style>{`.box{background:#0a081d;padding:12px;border-radius:10px;border:1px solid #141130;text-align:center;}.inp{width:100%;padding:10px;background:#050311;border:1px solid #191438;border-radius:8px;color:#fff;box-sizing:border-box;margin-bottom:10px;outline:none;}.btn{width:100%;padding:12px;background:linear-gradient(90deg,#38bdf8,#a855f7);color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;}`}</style>
+      
+      <div style={{background:'#090818',padding:'14px 20px',borderBottom:'1px solid #14122d',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
+          <button onClick={() => setSide(true)} style={{background:'#100e2b',border:'none',color:'#fff',padding:'8px 12px',borderRadius:'6px',cursor:'pointer'}}>☰</button>
+          <span style={{fontWeight:'800',fontSize:'16px',letterSpacing:'0.5px'}}>💸 CLICK TO EARN</span>
         </div>
-        <span style={{ background: '#100e2b', color: '#818cf8', padding: '6px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '700' }}>Active Router Node</span>
       </div>
 
-      <div style={{ position: 'fixed', top: 0, left: sidebarOpen ? 0 : '-280px', width: '250px', height: '100vh', background: '#09081a', borderRight: '1px solid #14122d', transition: '0.3s ease', zIndex: 999, padding: '20px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <div style={{position:'fixed',top:0,left:side?0:'-280px',width:'250px',height:'100vh',background:'#09081a',borderRight:'1px solid #14122d',transition:'0.3s ease',zIndex:999,padding:'20px',boxSizing:'border-box',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
         <div>
-          <h3 style={{ color: '#818cf8', margin: '0 0 20px 0', fontSize: '16px' }}>CLICK TO EARN Menu</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <button onClick={() => { setActiveTab('home'); setSidebarOpen(false); }} style={{ textAlign: 'left', width: '100%', padding: '10px', background: activeTab === 'home' ? '#18153c' : 'none', border: 'none', borderRadius: '6px', color: '#fff', cursor: 'pointer' }}>📊 Statistics</button>
-            <button onClick={() => { setActiveTab('manage'); setSidebarOpen(false); }} style={{ textAlign: 'left', width: '100%', padding: '10px', background: activeTab === 'manage' ? '#18153c' : 'none', border: 'none', borderRadius: '6px', color: '#fff', cursor: 'pointer' }}>📁 Files & Links</button>
-            {isAdmin && <button onClick={() => { setActiveTab('admin'); setSidebarOpen(false); }} style={{ textAlign: 'left', width: '100%', padding: '10px', background: activeTab === 'admin' ? '#18153c' : 'none', border: 'none', borderRadius: '6px', color: '#f59e0b', cursor: 'pointer' }}>👑 Admin Override</button>}
+          <h3 style={{color:'#818cf8',margin:'0 0 20px 0',fontSize:'16px'}}>CLICK TO EARN Menu</h3>
+          <div style={{display:'flex',flexDirection:'column',gap:'6px'}}>
+            <button onClick={() => { setTab('home'); setSide(false); }} style={{textAlign:'left',width:'100%',padding:'10px',background:tab==='home'?'#18153c':'none',border:'none',borderRadius:'6px',color:'#fff',cursor:'pointer'}}>📊 Statistics</button>
+            <button onClick={() => { setTab('manage'); setSide(false); }} style={{textAlign:'left',width:'100%',padding:'10px',background:tab==='manage'?'#18153c':'none',border:'none',borderRadius:'6px',color:'#fff',cursor:'pointer'}}>📁 Files & Links</button>
+            {isAdmin && <button onClick={() => { setTab('admin'); setSide(false); }} style={{textAlign:'left',width:'100%',padding:'10px',background:tab==='admin'?'#18153c':'none',border:'none',borderRadius:'6px',color:'#f59e0b',cursor:'pointer'}}>👑 Admin Override</button>}
           </div>
         </div>
-        <button onClick={() => signOut(auth)} style={{ width: '100%', padding: '8px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Logout</button>
+        <button onClick={() => signOut(auth)} style={{width:'100%',padding:'8px',background:'#ef4444',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>Logout</button>
       </div>
 
-      {activeTab === 'home' && (
-        <div style={{ padding: '20px 14px', maxWidth: '550px', margin: '0 auto' }}>
-          <div style={{ marginBottom: '15px' }}>
-            <h2 style={{ fontSize: '22px', fontWeight: '800', margin: '0' }}>Dashboard</h2>
-            <small style={{ color: '#64748b' }}>Track metrics performance nodes configuration.</small>
+      {tab === 'home' && (
+        <div style={{padding:'20px 14px',maxWidth:'550px',margin:'0 auto'}}>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px',marginBottom:'20px'}}>
+            <div className="box"><small style={{color:'#64748b'}}>WALLET</small><h3 style={{margin:'4px 0 0 0'}}>${stats.earn.toFixed(2)}</h3></div>
+            <div className="box"><small style={{color:'#64748b'}}>CPM</small><h3 style={{margin:'4px 0 0 0',color:'#818cf8'}}>${stats.cpm.toFixed(2)}</h3></div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px', textAlign: 'center' }}>
-            <div style={{ background: '#0a081d', padding: '12px', borderRadius: '10px', border: '1px solid #141130' }}><small style={{ color: '#64748b' }}>WALLET</small><h3 style={{ margin: '4px 0 0 0' }}>${globalNetworkStats.earnings.toFixed(2)}</h3></div>
-            <div style={{ background: '#0a081d', padding: '12px', borderRadius: '10px', border: '1px solid #141130' }}><small style={{ color: '#64748b' }}>CPM</small><h3 style={{ margin: '4px 0 0 0', color: '#818cf8' }}>${globalNetworkStats.cpm.toFixed(2)}</h3></div>
-            <div style={{ background: '#0a081d', padding: '12px', borderRadius: '10px', border: '1px solid #141130' }}><small style={{ color: '#64748b' }}>TOTAL APPROVAL</small><h3 style={{ margin: '4px 0 0 0', color: '#10b981' }}>$2.00</h3></div>
-            <div style={{ background: '#0a081d', padding: '12px', borderRadius: '10px', border: '1px solid #141130' }}><small style={{ color: '#64748b' }}>LIFETIME EARNING</small><h3 style={{ margin: '4px 0 0 0', color: '#fbbf24' }}>$3.70</h3></div>
+          <div style={{background:'linear-gradient(135deg,#0e163a,#2e1035)',padding:'20px',borderRadius:'16px',border:'1px solid #231942'}}>
+            <h4 style={{margin:'0 0 12px 0'}}>📝 Shorten New URL Path</h4>
+            <input className="inp" type="url" placeholder="Your URL Here (https://...)" value={url} onChange={e => setUrl(e.target.value)} />
+            <input className="inp" type="text" placeholder="Alias (Optional)" value={alias} onChange={e => setAlias(e.target.value)} />
+            <input className="inp" type="date" value={expiry} onChange={e => setExpiry(e.target.value)} />
+            <button className="btn" onClick={handleShorten}>Shorten ⚡</button>
           </div>
 
-          <div style={{ background: 'linear-gradient(135deg, #0e163a, #2e1035)', padding: '20px', borderRadius: '16px', border: '1px solid #231942' }}>
-            <h4 style={{ margin: '0 0 12px 0' }}>📝 Shorten New URL Path</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <input type="url" placeholder="Your URL Here (https://...)" style={{ width: '100%', padding: '10px', background: '#050311', border: '1px solid #191438', borderRadius: '8px', color: '#fff', boxSizing: 'border-box' }} value={longUrl} onChange={(e) => setLongUrl(e.target.value)} />
-              <input type="text" placeholder="Alias (Optional)" style={{ width: '100%', padding: '10px', background: '#050311', border: '1px solid #191438', borderRadius: '8px', color: '#fff', boxSizing: 'border-box' }} value={alias} onChange={(e) => setAlias(e.target.value)} />
-              <input type="date" style={{ width: '100%', padding: '10px', background: '#050311', border: '1px solid #191438', borderRadius: '8px', color: '#fff', boxSizing: 'border-box' }} value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
-              <button onClick={handleShorten} style={{ width: '100%', padding: '12px', background: 'linear-gradient(90deg, #38bdf8, #a855f7)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '800', cursor: 'pointer' }}>Shorten ⚡</button>
-            </div>
-          </div>
-
-          {justShortenedUrl && (
-            <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b981', padding: '16px', borderRadius: '12px', marginTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ overflow: 'hidden', width: '75%' }}>
-                <small style={{ color: '#10b981', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>✓ LINK GENERATED SUCCESSFULLY:</small>
-                <span style={{ fontSize: '13px', color: '#fff', whiteSpace: 'nowrap' }}>{justShortenedUrl}</span>
+          {shortened && (
+            <div style={{background:'rgba(16,185,129,0.1)',border:'1px solid #10b981',padding:'16px',borderRadius:'12px',marginTop:'16px',display:'flex',justifyContent: 'space-between',alignItems:'center'}}>
+              <div style={{overflow:'hidden',width:'75%'}}>
+                <small style={{color:'#10b981',fontWeight:'bold',display:'block',marginBottom:'4px'}}>✓ LINK GENERATED SUCCESSFULLY:</small>
+                <span style={{fontSize:'13px',color:'#fff',whiteSpace:'nowrap'}}>{shortened}</span>
               </div>
-              <button onClick={() => { navigator.clipboard.writeText(justShortenedUrl); alert("Copied successfully to clipboard!"); }} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Copy Link</button>
+              <button style={{background:'#10b981',color:'#fff',border:'none',padding:'8px 14px',borderRadius:'6px',fontSize:'12px',fontWeight:'700',cursor:'pointer'}} onClick={() => { navigator.clipboard.writeText(shortened); alert("Copied!"); }}>Copy Link</button>
             </div>
           )}
 
-          <div style={{ background: '#0a081d', padding: '15px', borderRadius: '12px', border: '1px solid #141130', marginTop: '15px' }}>
-            <small style={{ color: '#64748b' }}>TOTAL TRACKED SYSTEM CLICKS</small>
-            <h2 style={{ margin: '4px 0 0 0', fontSize: '24px' }}>{globalNetworkStats.clicks}</h2>
-          </div>
+          <div className="box" style={{marginTop:'15px',textAlign:'left'}}><small style={{color:'#64748b'}}>TOTAL PERFORMANCE CLICKS</small><h2 style={{margin:'4px 0 0 0',fontSize:'24px'}}>{stats.clk}</h2></div>
         </div>
       )}
 
-      {activeTab === 'manage' && (
-        <div style={{ padding: '20px 14px', maxWidth: '550px', margin: '0 auto' }}>
-          <div style={{ background: '#0a081d', padding: '15px', borderRadius: '12px' }}>
-            <h3 style={{ fontSize: '14px', color: '#818cf8', margin: '0 0 12px 0' }}>📋 Storage Index History</h3>
-            {userLinks.map((l, i) => (
-              <div key={i} style={{ background: '#04030a', padding: '10px', marginBottom: '8px', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '12px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '70%' }}>{l.shortUrl}</span>
-                <button onClick={() => { navigator.clipboard.writeText(l.shortUrl); alert("Copied!"); }} style={{ background: '#312e81', border: 'none', color: '#818cf8', padding: '4px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '11px' }}>Copy</button>
+      {tab === 'manage' && (
+        <div style={{padding:'20px 14px',maxWidth:'550px',margin:'0 auto'}}>
+          <div className="box" style={{textAlign:'left'}}>
+            <h3 style={{fontSize:'14px',color:'#818cf8',margin:'0 0 12px 0'}}>📋 Storage Index History</h3>
+            {links.map((l,i) => (
+              <div key={i} style={{background:'#04030a',padding:'10px',marginBottom:'8px',borderRadius:'6px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <span style={{fontSize:'12px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',width:'70%'}}>{l.shortUrl}</span>
+                <button style={{background:'#312e81',border:'none',color:'#818cf8',padding:'4px 10px',borderRadius:'4px',fontSize:'11px'}} onClick={() => { navigator.clipboard.writeText(l.shortUrl); alert("Copied!"); }}>Copy</button>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {activeTab === 'admin' && isAdmin && (
-        <div style={{ padding: '20px 14px', maxWidth: '550px', margin: '0 auto' }}>
-          <div style={{ background: 'linear-gradient(145deg, #18113c, #090818)', padding: '20px', borderRadius: '12px' }}>
-            <h3 style={{ color: '#f59e0b', margin: '0 0 12px 0', fontSize: '14px' }}>👑 Supreme Override Rules Settings</h3>
-            <input type="number" placeholder="CPM Rate" style={{ width: '100%', padding: '10px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '8px', boxSizing: 'border-box' }} value={adminCpm} onChange={(e) => setAdminCpm(e.target.value)} />
-            <input type="text" placeholder="Ad Domain" style={{ width: '100%', padding: '10px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '8px', boxSizing: 'border-box' }} value={adminAdDomain} onChange={(e) => setAdminAdDomain(e.target.value)} />
-            <input type="text" placeholder="Banner Key" style={{ width: '100%', padding: '10px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '12px', boxSizing: 'border-box' }} value={adminBannerKey} onChange={(e) => setAdminBannerKey(e.target.value)} />
-            <button onClick={() => setDoc(doc(db, "system", "settings"), { cpm: Number(adminCpm), adDomain: adminAdDomain, bannerKey: adminBannerKey, smartLink: adminS
+      {tab === 'admin' && isAdmin && (
+        <div style={{padding:'20px 14px',maxWidth:'550px',margin:'0 auto'}}>
+          <div style={{background:'linear-gradient(145deg,#18113c,#090818)',padding:'20px',borderRadius:'12px'}}>
+            <h3 style={{color:'#f59e0b',margin:'0 0 12px 0',fontSize:'14px'}}>👑 Supreme Settings</h3>
+            <input className="inp" type="number" placeholder="CPM Rate" value={admCpm} onChange={e => setAdmCpm(e.target.value)} />
+            <input className="inp" type="text" placeholder="Ad Domain" value={admDom} onChange={e => setAdmDom(e.target.value)} />
+            <input className="inp" type="text" placeholder="Banner Key" value={admKey} onChange={e => setAdmKey(e.target.value)} />
+            <button style={{width:'100%',padding:'10px',background:'#f59e0b',color:'#000',border:'none',borderRadius:'6px',fontWeight:'800'}} onClick={() => setDoc(doc(db,"system","settings"),{cpm:Number(admCpm),adDomain:admDom,bannerKey:admKey}).then(()=>alert("Saved!"))}>SAVE PARAMETERS</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
