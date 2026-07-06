@@ -86,13 +86,24 @@ export default function ClickToEarnUltimate() {
     try { if (isUp) { await createUserWithEmailAndPassword(auth, email, pass); setIsUp(false); } else { await signInWithEmailAndPassword(auth, email, pass); } } catch (e) { alert(e.message); }
   };
 
-  const handleShorten = async () => {
+  // 🔥 INSTANT OVERRIDE HANDLER (Optimistic State Layer Execution)
+  const handleShorten = () => {
     if (!url) return alert("Enter URL!");
+    if (!user) return alert("Login first!");
+    
     const al = alias.trim() || Math.random().toString(36).substring(2, 7);
     const gen = `${window.location.origin}?go=${al}`;
     const obj = { userId: user.uid, originalUrl: url, shortUrl: gen, alias: al, expiry, clicks: 0 };
-    await addDoc(collection(db, "links"), obj);
-    setShortened(gen); setLinks(p => [obj, ...p]); setUrl(''); setAlias(''); setExpiry('');
+    
+    // ⚡ INSTANT LOCAL REFRESH (Firebase Request se pehle chalega)
+    setShortened(gen); 
+    setLinks(p => [obj, ...p]); 
+    setUrl(''); 
+    setAlias(''); 
+    setExpiry('');
+
+    // Background push to database lifetime storage
+    addDoc(collection(db, "links"), obj).catch(e => console.error("Database sync error:", e));
   };
 
   if (rt) return (
@@ -113,7 +124,7 @@ export default function ClickToEarnUltimate() {
     </div>
   );
 
-  if (loading) return <div style={{background:'#04030a',color:'#6366f1',minHeight:100+'vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔄 Syncing System Core...</div>;
+  if (loading) return <div style={{background:#04030a,color:'#6366f1',minHeight:100+'vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔄 Syncing System Core...</div>;
 
   if (!user) return (
     <div className="main-bg font flex-col center p-20">
@@ -173,7 +184,7 @@ export default function ClickToEarnUltimate() {
                 <small style={{color:'#10b981',fontWeight:'bold',display:'block',marginBottom:'4px'}}>✓ LINK GENERATED SUCCESSFULLY:</small>
                 <span style={{fontSize:'13px',color:'#fff',whiteSpace:'nowrap'}}>{shortened}</span>
               </div>
-              <button style={{background:'#10b981',color:'#fff',border:'none',padding:'8px 14px',borderRadius:'6px',fontSize:'12px',fontWeight:'700',cursor:'pointer'}} onClick={() => { navigator.clipboard.writeText(shortened); alert("Copied!"); }}>Copy Link</button>
+              <button style={{background:'#10b981',color:'#fff',border:'none',padding:'8px 14px',borderRadius:'6px',fontSize:'12px',fontWeight:'700',cursor:'pointer'}} onClick={() => { navigator.clipboard.writeText(shortened); alert("Copied successfully!"); }}>Copy Link</button>
             </div>
           )}
 
@@ -188,7 +199,7 @@ export default function ClickToEarnUltimate() {
             {links.map((l,i) => (
               <div key={i} style={{background:'#04030a',padding:'10px',marginBottom:'8px',borderRadius:'6px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                 <span style={{fontSize:'12px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',width:'70%'}}>{l.shortUrl}</span>
-                <button style={{background:'#312e81',border:'none',color:'#818cf8',padding:'4px 10px',borderRadius:'4px',fontSize:'11px'}} onClick={() => { navigator.clipboard.writeText(l.shortUrl); alert("Copied!"); }}>Copy</button>
+                <button style={{background:'#312e81',border:'none',color:'#818cf8',padding:'4px 10px',borderRadius:'4px',fontSize:'11px',cursor:'pointer'}} onClick={() => { navigator.clipboard.writeText(l.shortUrl); alert("Copied!"); }}>Copy</button>
               </div>
             ))}
           </div>
@@ -208,4 +219,5 @@ export default function ClickToEarnUltimate() {
       )}
     </div>
   );
-}
+    }
+    
