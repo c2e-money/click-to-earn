@@ -137,7 +137,7 @@ export default function ClickToEarnUltimate() {
     </div>
   );
 
-  if (isTokenFound) return <div style={{background:#04030a,color:'#a78bfa',minHeight:'100vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔒 Directing to Traffic Core Verification Instance...</div>;
+  if (isTokenFound) return <div style={{background:'#04030a',color:'#a78bfa',minHeight:'100vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔒 Directing to Traffic Core Verification Instance...</div>;
   if (loading) return <div style={{background:'#04030a',color:'#6366f1',minHeight:'100vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔄 Connecting Click To Earn Hub...</div>;
 
   if (!user) return (
