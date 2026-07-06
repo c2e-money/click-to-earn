@@ -33,7 +33,6 @@ export default function ClickToEarnUltimate() {
   const [rt, setRt] = useState(false), [stage, setStage] = useState(1), [tmr, setTmr] = useState(10), [dest, setDest] = useState('');
   const [admCpm, setAdmCpm] = useState(3.0), [admDom, setAdmDom] = useState("rightyrely.com"), [admKey, setAdmKey] = useState("23591d15e448b5bf1900c3bf28352b68");
 
-  // Redirection Link Gateway Check (Highest Priority)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const tok = new URLSearchParams(window.location.search).get('go');
@@ -73,20 +72,13 @@ export default function ClickToEarnUltimate() {
     });
   };
 
-  // STRICT USER SESSION INITIALIZATION ENGINE
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
+    return onAuthStateChanged(auth, (u) => {
       if (u) {
-        setUser(u);
-        if (u.email.includes("admin")) setIsAdmin(true);
-        loadLogs(u.uid);
-      } else {
-        setUser(null);
-        setIsAdmin(false);
-      }
+        setUser(u); if (u.email.includes("admin")) setIsAdmin(true); loadLogs(u.uid);
+      } else { setUser(null); setIsAdmin(false); }
       setLoading(false);
     });
-    return () => unsub();
   }, [admCpm]);
 
   const handleAuth = async () => {
@@ -97,24 +89,13 @@ export default function ClickToEarnUltimate() {
   const handleShorten = () => {
     if (!url) return alert("Enter URL!");
     if (!user) return alert("Login first!");
-    
     const al = alias.trim() || Math.random().toString(36).substring(2, 7);
     const gen = `${window.location.origin}?go=${al}`;
     const obj = { userId: user.uid, originalUrl: url, shortUrl: gen, alias: al, expiry, clicks: 0 };
-    
-    setShortened(gen); 
-    setLinks(p => [obj, ...p]); 
-    setUrl(''); 
-    setAlias(''); 
-    setExpiry('');
-
+    setShortened(gen); setLinks(p => [obj, ...p]); setUrl(''); setAlias(''); setExpiry('');
     addDoc(collection(db, "links"), obj).catch(e => console.error(e));
   };
 
-  // 1. Loading Matrix Guard Layer
-  if (loading) return <div style={{background:'#04030a',color:'#6366f1',minHeight:'100vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔄 Syncing Secure Click To Earn Core...</div>;
-
-  // 2. Ad Redirection / Traffic Filter Layer
   if (rt) return (
     <div className="main-bg font flex-col center p-20">
       <style>{`.main-bg{background:#04030a;min-height:100vh;color:#fff;}.font{font-family:sans-serif;}.flex-col{display:flex;flex-direction:column;}.center{align-items:center;justify-content:center;}.p-20{padding:20px;}.card{background:#0e0b20;padding:25px;border-radius:16px;border:1px solid #1c1736;width:100%;max-width:420px;text-align:center;}.btn{width:100%;padding:14px;background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;}.inp{width:100%;padding:12px;background:#04030a;border:1px solid #231c4f;border-radius:8px;color:#fff;box-sizing:border-box;margin-bottom:12px;outline:none;}`}</style>
@@ -133,11 +114,12 @@ export default function ClickToEarnUltimate() {
     </div>
   );
 
-  // 3. SECURE AUTHENTICATION FORCE WALL LAYER (Stops Direct Dashboard Leak)
+  if (loading) return <div style={{background:'#04030a',color:'#6366f1',minHeight:'100vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔄 Syncing System Core...</div>;
+
   if (!user) return (
     <div className="main-bg font flex-col center p-20">
       <style>{`.main-bg{background:#04030a;min-height:100vh;color:#fff;}.font{font-family:sans-serif;}.flex-col{display:flex;flex-direction:column;}.center{align-items:center;justify-content:center;}.card{background:#09081d;padding:30px;border-radius:20px;border:1px solid #1a153a;width:100%;max-width:380px;box-sizing:border-box;}.btn{width:100%;padding:12px;background:#4f46e5;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;}.inp{width:100%;padding:12px;background:#04030a;border:1px solid #231c4f;border-radius:8px;color:#fff;box-sizing:border-box;margin-bottom:12px;outline:none;}`}</style>
-      <h1 style={{fontWeight:'900',fontSize:'26px',marginBottom:'20px',letterSpacing:'1px'}}>💸 CLICK TO EARN</h1>
+      <h1 style={{fontWeight:'900',fontSize:'26px',marginBottom:'20px',letterSpacing:'1px',textAlign:'center'}}>💸 CLICK TO EARN</h1>
       <div className="card">
         <h2 style={{textAlign:'center',color:'#a78bfa',margin:'0 0 20px 0',fontSize:'18px'}}>{isUp ? "Register Account" : "Identity Authorization Login"}</h2>
         <input className="inp" type="email" placeholder="Email Address" value={email} onChange={e => setEmail(e.target.value)} />
@@ -148,7 +130,6 @@ export default function ClickToEarnUltimate() {
     </div>
   );
 
-  // 4. MAIN USER COMPONENT REVENUE LAYOUT (ONLY ACCESSIBLE VIA AUTH HOOKS)
   return (
     <div style={{backgroundColor:'#04030a',color:'#f1f5f9',minHeight:'100vh',fontFamily:'sans-serif'}}>
       <style>{`.box{background:#0a081d;padding:12px;border-radius:10px;border:1px solid #141130;text-align:center;}.inp{width:100%;padding:10px;background:#050311;border:1px solid #191438;border-radius:8px;color:#fff;box-sizing:border-box;margin-bottom:10px;outline:none;}.btn{width:100%;padding:12px;background:linear-gradient(90deg,#38bdf8,#a855f7);color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;}`}</style>
@@ -222,11 +203,11 @@ export default function ClickToEarnUltimate() {
             <input className="inp" type="number" placeholder="CPM Rate" value={admCpm} onChange={e => setAdmCpm(e.target.value)} />
             <input className="inp" type="text" placeholder="Ad Domain" value={admDom} onChange={e => setAdmDom(e.target.value)} />
             <input className="inp" type="text" placeholder="Banner Key" value={admKey} onChange={e => setAdmKey(e.target.value)} />
-            <button style={{width:'100%',padding:'10px',background:'#f59e0b',color:#000,border:'none',borderRadius:'6px',fontWeight:'800'}} onClick={() => setDoc(doc(db,"system","settings"),{cpm:Number(admCpm),adDomain:admDom,bannerKey:admKey}).then(()=>alert("Saved!"))}>SAVE PARAMETERS</button>
+            <button style={{width:'100%',padding:'10px',background:'#f59e0b',color:'#000',border:'none',borderRadius:'6px',fontWeight:'800'}} onClick={() => setDoc(doc(db,"system","settings"),{cpm:Number(admCpm),adDomain:admDom,bannerKey:admKey}).then(()=>alert("Saved!"))}>SAVE PARAMETERS</button>
           </div>
         </div>
       )}
     </div>
   );
-  }
+               }
     
