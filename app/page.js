@@ -44,7 +44,6 @@ export default function ClickToEarnUltimate() {
   const [stageTimer, setStageTimer] = useState(10);
   const [lockedDestinationUrl, setLockedDestinationUrl] = useState('');
 
-  // 1. SUPREME HIGH-PRIORITY ROUTING INJECTION (Dashboard loop fix)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const token = new URLSearchParams(window.location.search).get('go');
@@ -85,14 +84,24 @@ export default function ClickToEarnUltimate() {
     }
   }, [isRoutingActive, currentStage, adminAdDomain]);
 
+  const loadUserHistoryData = (uid) => {
+    getDocs(query(collection(db, "links"), where("userId", "==", uid))).then(snap => {
+      let clk = 0; const tmp = []; 
+      snap.forEach(d => { tmp.push({id:d.id, ...d.data()}); clk += (d.data().clicks || 0); });
+      setUserLinks(tmp); 
+      setGlobalNetworkStats({ clicks: clk, cpm: adminCpm, earnings: (clk / 1000) * adminCpm });
+    });
+  };
+
   useEffect(() => {
     return onAuthStateChanged(auth, (curr) => {
       if (curr) {
-        setUser(curr); if (curr.email.includes("admin")) { setIsAdmin(true); getDocs(collection(db, "links")).then(s => setAllSystemLinks(s.docs.map(d => ({id:d.id, ...d.data()})))); }
-        getDocs(query(collection(db, "links"), where("userId", "==", curr.uid))).then(snap => {
-          let clk = 0; const tmp = []; snap.forEach(d => { tmp.push({id:d.id, ...d.data()}); clk += (d.data().clicks || 0); });
-          setUserLinks(tmp); setGlobalNetworkStats({ clicks: clk, cpm: adminCpm, earnings: (clk / 1000) * adminCpm });
-        });
+        setUser(curr); 
+        if (curr.email.includes("admin")) { 
+          setIsAdmin(true); 
+          getDocs(collection(db, "links")).then(s => setAllSystemLinks(s.docs.map(d => ({id:d.id, ...d.data()})))); 
+        }
+        loadUserHistoryData(curr.uid);
       } else { setUser(null); setIsAdmin(false); }
       setAuthLoading(false);
     });
@@ -105,12 +114,29 @@ export default function ClickToEarnUltimate() {
 
   const handleShorten = async () => {
     if (!longUrl) return alert("URL Missing!");
+    if (!user) return alert("Session expired, please login again!");
+    
     const finalAlias = alias.trim() || Math.random().toString(36).substring(2, 7);
     const generatedPath = `${window.location.origin}?go=${finalAlias}`;
-    await addDoc(collection(db, "links"), { userId: user.uid, originalUrl: longUrl, shortUrl: generatedPath, alias: finalAlias, expiry: expiryDate, clicks: 0 });
     
-    // Set response link, clear states instantly
+    const newLinkObj = { 
+      userId: user.uid, 
+      originalUrl: longUrl, 
+      shortUrl: generatedPath, 
+      alias: finalAlias, 
+      expiry: expiryDate, 
+      clicks: 0,
+      createdAt: new Date().toISOString()
+    };
+
+    // 1. Save to cloud database permanently
+    await addDoc(collection(db, "links"), newLinkObj);
+    
+    // 2. Instant Local State Updates (No refresh needed)
     setJustShortenedUrl(generatedPath);
+    setUserLinks(prev => [newLinkObj, ...prev]);
+    
+    // 3. Clear boxes instantly
     setLongUrl(''); setAlias(''); setExpiryDate('');
   };
 
@@ -124,7 +150,6 @@ export default function ClickToEarnUltimate() {
     </div>
   );
 
-  // Global Multi-Stage Routing Render Layer (Stops Dashboard Leaks)
   if (isRoutingActive) {
     return (
       <div style={{ background: '#04030a', color: '#fff', minHeight: '100vh', padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: 'sans-serif' }}>
@@ -208,7 +233,6 @@ export default function ClickToEarnUltimate() {
             </div>
           </div>
 
-          {/* 🔥 DYNAMIC INSTANT ACTIONABLE COPY CARD */}
           {justShortenedUrl && (
             <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b981', padding: '16px', borderRadius: '12px', marginTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ overflow: 'hidden', width: '75%' }}>
@@ -247,6 +271,4 @@ export default function ClickToEarnUltimate() {
             <input type="number" placeholder="CPM Rate" style={{ width: '100%', padding: '10px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '8px', boxSizing: 'border-box' }} value={adminCpm} onChange={(e) => setAdminCpm(e.target.value)} />
             <input type="text" placeholder="Ad Domain" style={{ width: '100%', padding: '10px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '8px', boxSizing: 'border-box' }} value={adminAdDomain} onChange={(e) => setAdminAdDomain(e.target.value)} />
             <input type="text" placeholder="Banner Key" style={{ width: '100%', padding: '10px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '12px', boxSizing: 'border-box' }} value={adminBannerKey} onChange={(e) => setAdminBannerKey(e.target.value)} />
-            <button onClick={() => setDoc(doc(db, "system", "settings"), { cpm: Number(adminCpm), adDomain: adminAdDomain, bannerKey: adminBannerKey, smartLink: adminSmartLink }).then(() => alert("Saved Rules Live!"))} style={{ width: '100%', padding: '10px', background: '#f59e0b', color: '#000', border: 'none', borderRadius: '6px', fontWeight: '800', cursor: 'pointer' }}>SAVE CORE PARAMETERS</button>
-          </div>
-        </di
+            <button onClick={() => setDoc(doc(db, "system", "settings"), { cpm: Number(adminCpm), adDomain: adminAdDomain, bannerKey: adminBannerKey, smartLink: adminS
