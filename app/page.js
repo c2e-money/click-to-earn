@@ -25,12 +25,10 @@ export default function ClickToEarnUltimate() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
-  
   const [longUrl, setLongUrl] = useState('');
   const [alias, setAlias] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [justShortenedUrl, setJustShortenedUrl] = useState('');
-
   const [userLinks, setUserLinks] = useState([]);
   const [allSystemLinks, setAllSystemLinks] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -153,7 +151,7 @@ export default function ClickToEarnUltimate() {
           <h2 style={{ textAlign: 'center', color: '#a78bfa', margin: '0 0 20px 0', fontSize: '18px' }}>{isSignUp ? "Register Portal Profile" : "Identity Authorization Login"}</h2>
           <input type="email" placeholder="Email Address" style={{ width: '100%', padding: '12px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '12px', boxSizing: 'border-box' }} value={email} onChange={(e) => setEmail(e.target.value)} />
           <input type="password" placeholder="Password" style={{ width: '100%', padding: '12px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '20px', boxSizing: 'border-box' }} value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button onClick={handleAuth} style={{ width: '100%', padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>{isSignUp ? "Sign Up Node" : "Sign In Router"}</button>
+          <button onClick={handleAuth} style={{ width: '100%', padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>{isSignUp ? "Sign Up" : "Sign In"}</button>
           <p onClick={() => setIsSignUp(!isSignUp)} style={{ color: '#64748b', fontSize: '12px', textAlign: 'center', marginTop: '15px', cursor: 'pointer' }}>{isSignUp ? "Switch to Login" : "Create New Workspace Account"}</p>
         </div>
       </div>
@@ -206,19 +204,18 @@ export default function ClickToEarnUltimate() {
             </div>
           </div>
 
-          {/* 🔥 INSTANT ACTIONABLE COPY CARD */}
           {justShortenedUrl && (
             <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b981', padding: '16px', borderRadius: '12px', marginTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ overflow: 'hidden', width: '75%' }}>
-                <small style={{ color: '#10b981', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>✓ LINK GENERATED CORRECTION INSTANCE:</small>
+                <small style={{ color: '#10b981', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>✓ LINK GENERATED SUCCESSFULLY:</small>
                 <span style={{ fontSize: '13px', color: '#fff', whiteSpace: 'nowrap' }}>{justShortenedUrl}</span>
               </div>
-              <button onClick={() => { navigator.clipboard.writeText(justShortenedUrl); alert("Copied successfully to dashboard clipboard!"); }} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Copy Link</button>
+              <button onClick={() => { navigator.clipboard.writeText(justShortenedUrl); alert("Copied successfully!"); }} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Copy Link</button>
             </div>
           )}
 
           <div style={{ background: '#0a081d', padding: '15px', borderRadius: '12px', border: '1px solid #141130', marginTop: '15px' }}>
-            <small style={{ color: '#64748b' }}>TOTAL INTENSITY CLICKS</small>
+            <small style={{ color: '#64748b' }}>TOTAL INTERACTION CLICKS</small>
             <h2 style={{ margin: '4px 0 0 0', fontSize: '24px' }}>{globalNetworkStats.clicks}</h2>
           </div>
         </div>
@@ -247,5 +244,9 @@ export default function ClickToEarnUltimate() {
             <input type="text" placeholder="Banner Key" style={{ width: '100%', padding: '10px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '12px', boxSizing: 'border-box' }} value={adminBannerKey} onChange={(e) => setAdminBannerKey(e.target.value)} />
             <button onClick={() => setDoc(doc(db, "system", "settings"), { cpm: Number(adminCpm), adDomain: adminAdDomain, bannerKey: adminBannerKey, smartLink: adminSmartLink }).then(() => alert("Saved Rules Live!"))} style={{ width: '100%', padding: '10px', background: '#f59e0b', color: '#000', border: 'none', borderRadius: '6px', fontWeight: '800', cursor: 'pointer' }}>SAVE CORE PARAMETERS</button>
           </div>
-          <div style={{ marginTop: '15px', background: '#0a081d', padding: '10px', borderRadius: '12px', maxHeight: '150px', overflowY: 'auto' }}>
-            {allSystemLinks.map((l, i) => ( <div key={i} style={{ display: 'flex', just
+        </div>
+      )}
+    </div>
+  );
+        }
+          
