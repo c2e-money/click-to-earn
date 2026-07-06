@@ -25,12 +25,19 @@ export default function ClickToEarnUltimate() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
+  
+  // URL Input States
   const [longUrl, setLongUrl] = useState('');
+  const [alias, setAlias] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+
   const [userLinks, setUserLinks] = useState([]);
   const [allSystemLinks, setAllSystemLinks] = useState([]);
-  const [globalNetworkStats, setGlobalNetworkStats] = useState({ clicks: 0, earnings: 0, cpm: 9 });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [globalNetworkStats, setGlobalNetworkStats] = useState({ clicks: 0, earnings: 0, cpm: 3.00 });
 
-  const [adminCpm, setAdminCpm] = useState(9);
+  // Admin Variables
+  const [adminCpm, setAdminCpm] = useState(3.00);
   const [adminAdDomain, setAdminAdDomain] = useState("rightyrely.com");
   const [adminBannerKey, setAdminBannerKey] = useState("23591d15e448b5bf1900c3bf28352b68");
   const [adminNativeKey, setAdminNativeKey] = useState("cf611de77a66f7b9cc6ae3b4ca404da7");
@@ -47,7 +54,7 @@ export default function ClickToEarnUltimate() {
         const settingsSnap = await getDoc(doc(db, "system", "settings"));
         if (settingsSnap.exists()) {
           const s = settingsSnap.data();
-          setAdminCpm(Number(s.cpm || 9));
+          setAdminCpm(Number(s.cpm || 3.00));
           setAdminAdDomain(s.adDomain || "rightyrely.com");
           setAdminBannerKey(s.bannerKey || "23591d15e448b5bf1900c3bf28352b68");
           setAdminNativeKey(s.nativeKey || "cf611de77a66f7b9cc6ae3b4ca404da7");
@@ -134,154 +141,178 @@ export default function ClickToEarnUltimate() {
 
   const handleShorten = async () => {
     if (!longUrl) return alert("Link missing!");
-    const tok = Math.random().toString(36).substring(2, 7);
-    await addDoc(collection(db, "links"), { userId: user ? user.uid : "guest", originalUrl: longUrl, shortUrl: `${window.location.origin}?go=${tok}`, alias: tok, clicks: 0 });
-    setLongUrl(''); alert("Encrypted successfully!"); setActiveTab('manage');
+    const finalAlias = alias.trim() || Math.random().toString(36).substring(2, 7);
+    await addDoc(collection(db, "links"), { 
+      userId: user ? user.uid : "guest", 
+      originalUrl: longUrl, 
+      shortUrl: `${window.location.origin}?go=${finalAlias}`, 
+      alias: finalAlias, 
+      expiry: expiryDate,
+      clicks: 0 
+    });
+    setLongUrl('');
+    setAlias('');
+    setExpiryDate('');
+    alert("URL Shortened successfully!"); 
+    setActiveTab('manage');
   };
 
   const AdPlacementBlockGroup = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', margin: '15px 0', width: '100%', maxWidth: '468px' }}>
       {[...Array(3)].map((_, i) => (
-        <div key={i} style={{ background: '#111928', padding: '10px', borderRadius: '8px', border: '1px solid #1f2a37', display: 'flex', justifyContent: 'center' }}>
+        <div key={i} style={{ background: '#0a0915', padding: '10px', borderRadius: '8px', border: '1px solid #1c1a30', display: 'flex', justifyContent: 'center' }}>
           <iframe src={`//${adminAdDomain}/watch.html?key=${adminBannerKey}`} width="468" height="60" frameBorder="0" scrolling="no" style={{ maxWidth: '100%', border: 'none' }}></iframe>
         </div>
       ))}
-      <button onClick={() => window.open(adminSmartLink, '_blank')} style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: '#fff', padding: '14px', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', letterSpacing: '0.5px' }}>⚡ INSTANT CLOUD ACCESS SYSTEM</button>
     </div>
   );
 
-  // loading state layer
   if (authLoading) {
     return (
-      <div style={{ backgroundColor: '#060b18', color: '#38bdf8', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'sans-serif', fontWeight: 'bold' }}>
-        🔄 Connecting Secure Node Instance...
+      <div style={{ backgroundColor: '#04030a', color: '#7c3aed', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'sans-serif', fontWeight: 'bold' }}>
+        🔄 Loading Network Parameters...
       </div>
     );
   }
 
-  // ad routing/verification page layer
+  // Verification Screen Router
   if (isRoutingActive) {
     return (
-      <div style={{ background: '#0b1329', color: '#f3f4f6', minHeight: '100vh', padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-        <div style={{ padding: '8px 16px', borderRadius: '30px', background: '#1e293b', color: '#38bdf8', fontSize: '12px', fontWeight: '600', border: '1px solid #334155', marginBottom: '15px', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>🔒 Secure Verification Tunnel • Step {currentStage}/4</div>
+      <div style={{ background: '#04030a', color: '#f3f4f6', minHeight: '100vh', padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: 'system-ui, sans-serif' }}>
+        <div style={{ padding: '8px 16px', borderRadius: '30px', background: '#0e0b20', color: '#a78bfa', fontSize: '12px', fontWeight: '600', border: '1px solid #1f1938', marginBottom: '15px' }}>🔒 Cloud Secure Check • Link Stage {currentStage}/4</div>
         
         {currentStage !== 4 && <AdPlacementBlockGroup />}
         
-        <div style={{ background: 'linear-gradient(145deg, #111c44, #0b1329)', padding: '30px 20px', borderRadius: '16px', border: '1px solid #1e293b', width: '100%', maxWidth: '450px', textAlign: 'center', margin: '20px 0', boxShadow: '0 10px 25px rgba(0,0,0,0.4)' }}>
+        <div style={{ background: 'linear-gradient(145deg, #0d0a21, #04030a)', padding: '30px 20px', borderRadius: '16px', border: '1px solid #1c1736', width: '100%', maxWidth: '450px', textAlign: 'center', margin: '20px 0' }}>
           {stageTimer > 0 ? ( 
-            <div style={{ fontSize: '18px', fontWeight: '700', color: '#f1f5f9' }}>
-              🔄 Anti-Bot Scanning... <span style={{ color: '#f59e0b', fontSize: '22px' }}>{stageTimer}s</span>
+            <div style={{ fontSize: '17px', fontWeight: '700', color: '#e2e8f0' }}>
+              🔄 Validating Destination Secure Node... <span style={{ color: '#d97706', fontSize: '22px' }}>{stageTimer}s</span>
             </div> 
           ) : (
             currentStage === 4 ? (
               <div>
-                <div style={{ background: 'linear-gradient(90deg, #0284c7, #0369a1)', padding: '14px', borderRadius: '8px', color: '#fff', marginBottom: '16px', fontWeight: '600', fontSize: '14px', boxShadow: '0 4px 10px rgba(2, 132, 199, 0.2)' }}>
-                  <a href="https://t.me/YOUR_CHANNEL" target="_blank" style={{ color: '#fff', textDecoration: 'none', display: 'block' }}>💬 Join Our Official Telegram Updates Portal</a>
+                <div style={{ background: 'linear-gradient(90deg, #1d4ed8, #1e40af)', padding: '14px', borderRadius: '8px', color: '#fff', marginBottom: '16px', fontWeight: '600', fontSize: '13px' }}>
+                  <a href="https://t.me/YOUR_CHANNEL" target="_blank" style={{ color: '#fff', textDecoration: 'none' }}>💬 Join Our Telegram Updates System Node</a>
                 </div>
-                <button onClick={() => window.location.replace(lockedDestinationUrl.trim().startsWith('http') ? lockedDestinationUrl.trim() : 'https://' + lockedDestinationUrl.trim())} style={{ width: '100%', padding: '16px', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: '800', fontSize: '16px', cursor: 'pointer', boxShadow: '0 6px 20px rgba(16, 185, 129, 0.4)' }}>🚀 UNLOCK TARGET DESTINATION</button>
+                <button onClick={() => window.location.replace(lockedDestinationUrl.trim().startsWith('http') ? lockedDestinationUrl.trim() : 'https://' + lockedDestinationUrl.trim())} style={{ width: '100%', padding: '16px', background: 'linear-gradient(135deg, #059669, #10b981)', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: '800', fontSize: '16px', cursor: 'pointer' }}>🚀 UNLOCK MAIN LINK</button>
               </div>
             ) : ( 
-              <button onClick={() => { setCurrentStage(currentStage + 1); setStageTimer(currentStage + 1 === 4 ? 5 : 8); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ width: '100%', padding: '15px', background: 'linear-gradient(135deg, #38bdf8, #0284c7)', color: '#030712', border: 'none', borderRadius: '10px', fontWeight: '800', fontSize: '15px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(56, 189, 248, 0.3)' }}>CONTINUE TO NEXT PAGE ➡️</button> 
+              <button onClick={() => { setCurrentStage(currentStage + 1); setStageTimer(currentStage + 1 === 4 ? 5 : 8); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ width: '100%', padding: '15px', background: 'linear-gradient(135deg, #6366f1, #4f46e5)', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: '800', fontSize: '15px', cursor: 'pointer' }}>CONTINUE SYSTEM STEP ➡️</button> 
             )
           )}
         </div>
         
         {currentStage !== 4 && <AdPlacementBlockGroup />}
-        <footer style={{ fontSize: '12px', color: '#4b5563', marginTop: '30px', letterSpacing: '0.5px' }}>Copyright © Click To Earn 2026</footer>
       </div>
     );
   }
 
-  // IF NOT LOGGED IN: FORCE AUTH LAYOUT FIRST
+  // LOGIN PAGE LAYOUT
   if (!user) {
     return (
-      <div style={{ backgroundColor: '#060b18', color: '#f1f5f9', minHeight: '100vh', fontFamily: 'system-ui, -apple-system, sans-serif', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px 16px' }}>
-        
-        <div style={{ textCenter: 'center', marginBottom: '24px', textAlign: 'center' }}>
-          <h1 style={{ fontWeight: '900', color: '#38bdf8', fontSize: '28px', letterSpacing: '1.5px', margin: '0 0 8px 0', textShadow: '0 0 15px rgba(56,189,248,0.3)' }}>CLICK TO EARN</h1>
-          <p style={{ color: '#64748b', fontSize: '14px', margin: 0 }}>The Ultimate High-CPM URL Link Optimizer</p>
-        </div>
-
-        <div style={{ background: 'linear-gradient(145deg, #0f172a, #0b1329)', padding: '30px', borderRadius: '20px', border: '1px solid #1e293b', boxShadow: '0 15px 35px rgba(0,0,0,0.4)', width: '100%', maxWidth: '420px', boxSizing: 'border-box' }}>
-          <h3 style={{ textAlign: 'center', marginBottom: '22px', fontSize: '18px', color: '#f1f5f9', fontWeight: '700' }}>
-            {isSignUp ? "Create Secure Account Node" : "Identity Console Portal Access"}
-          </h3>
-          
-          <div style={{ marginBottom: '14px' }}>
-            <label style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Database Email Address</label>
-            <input type="email" placeholder="name@example.com" style={{ width: '100%', padding: '12px 14px', background: '#060b18', border: '1px solid #334155', borderRadius: '8px', color: '#fff', marginTop: '6px', boxSizing: 'border-box', outline: 'none', fontSize: '14px' }} value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>System Crypt Password</label>
-            <input type="password" placeholder="••••••••" style={{ width: '100%', padding: '12px 14px', background: '#060b18', border: '1px solid #334155', borderRadius: '8px', color: '#fff', marginTop: '6px', boxSizing: 'border-box', outline: 'none', fontSize: '14px' }} value={password} onChange={(e) => setPassword(e.target.value)} />
-          </div>
-
-          <button onClick={handleAuth} style={{ width: '100%', padding: '14px', background: 'linear-gradient(135deg, #38bdf8, #0284c7)', color: '#030712', border: 'none', borderRadius: '8px', fontWeight: '800', fontSize: '15px', cursor: 'pointer', boxShadow: '0 4px 14px rgba(56, 189, 248, 0.2)', transition: 'all 0.2s' }}>
-            {isSignUp ? "Deploy Node Profile" : "Access Cloud Dashboard"}
+      <div style={{ backgroundColor: '#04030a', color: '#f1f5f9', minHeight: '100vh', fontFamily: 'system-ui, sans-serif', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px 16px' }}>
+        <div style={{ background: 'linear-gradient(145deg, #0a081d, #04030a)', padding: '30px', borderRadius: '24px', border: '1px solid #1a153a', width: '100%', maxWidth: '400px', boxSizing: 'border-box', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+          <h2 style={{ textAlign: 'center', marginBottom: '24px', fontSize: '22px', color: '#a78bfa', fontWeight: '800', letterSpacing: '0.5px' }}>
+            {isSignUp ? "Sign Up Node" : "Login Dashboard"}
+          </h2>
+          <input type="email" placeholder="Email Address" style={{ width: '100%', padding: '12px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '12px', boxSizing: 'border-box', outline: 'none' }} value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input type="password" placeholder="Key Password" style={{ width: '100%', padding: '12px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '20px', boxSizing: 'border-box', outline: 'none' }} value={password} onChange={(e) => setPassword(e.target.value)} />
+          <button onClick={handleAuth} style={{ width: '100%', padding: '14px', background: 'linear-gradient(135deg, #6366f1, #4f46e5)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>
+            {isSignUp ? "Register Node" : "Access Console"}
           </button>
-          
-          <button onClick={() => setIsSignUp(!isSignUp)} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '12px', width: '100%', marginTop: '16px', cursor: 'pointer', fontWeight: '500' }}>
-            {isSignUp ? "Already registered? Connect Existing Node" : "Request New Framework Account Profile"}
+          <button onClick={() => setIsSignUp(!isSignUp)} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '12px', width: '100%', marginTop: '16px', cursor: 'pointer' }}>
+            {isSignUp ? "Have an account? Login" : "Create new portal layout"}
           </button>
         </div>
-
-        <footer style={{ fontSize: '11px', color: '#334155', marginTop: '40px' }}>Secure Layer 256-bit Encrypted Instance • © 2026</footer>
       </div>
     );
   }
 
-  // MAIN DASHBOARD LAYOUT (ONLY ACCESSIBLE AFTER SUCCESSFUL LOGIN)
+  // MAIN CONTENT ROUTER WITH COMPACT HIGHLIGHTS
   return (
-    <div style={{ backgroundColor: '#060b18', color: '#f1f5f9', minHeight: '100vh', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+    <div style={{ backgroundColor: '#04030a', color: '#f1f5f9', minHeight: '100vh', fontFamily: 'system-ui, sans-serif', position: 'relative', overflowX: 'hidden' }}>
       
-      {/* Premium Navigation Header */}
-      <div style={{ background: '#0b1329', padding: '18px 24px', borderBottom: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
-        <span style={{ fontWeight: '900', color: '#38bdf8', fontSize: '20px', letterSpacing: '1px', textShadow: '0 0 10px rgba(56,189,248,0.2)' }}>CLICK TO EARN</span>
-        <div style={{ display: 'flex', gap: '8px', background: '#111928', padding: '4px', borderRadius: '8px', border: '1px solid #1f2a37' }}>
-          <button onClick={() => setActiveTab('home')} style={{ background: activeTab === 'home' ? '#1e293b' : 'none', border: 'none', color: activeTab === 'home' ? '#38bdf8' : '#94a3b8', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}>Dashboard</button>
-          <button onClick={() => setActiveTab('manage')} style={{ background: activeTab === 'manage' ? '#1e293b' : 'none', border: 'none', color: activeTab === 'manage' ? '#38bdf8' : '#94a3b8', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}>Links</button>
-          <button onClick={() => setActiveTab('profile')} style={{ background: activeTab === 'profile' ? '#1e293b' : 'none', border: 'none', color: activeTab === 'profile' ? '#38bdf8' : '#94a3b8', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}>Account</button>
-          {isAdmin && <button onClick={() => setActiveTab('admin')} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#000', border: 'none', padding: '8px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>👑 Control</button>}
+      {/* HEADER SECTION BAR - EXACTLY LIKE URLKING */}
+      <div style={{ background: '#090818', padding: '14px 20px', borderBottom: '1px solid #14122d', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <button onClick={() => setSidebarOpen(true)} style={{ background: '#100e2b', border: 'none', color: '#fff', padding: '10px', borderRadius: '8px', cursor: 'pointer', fontSize: '16px' }}>☰</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'linear-gradient(135deg, #6366f1, #d946ef)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>👑</span>
+            <span style={{ fontWeight: '800', color: '#fff', fontSize: '18px', letterSpacing: '0.5px' }}>URLKING</span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <span style={{ background: '#100e2b', color: '#818cf8', padding: '8px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '700', border: '1px solid #1b1747' }}>🔗 Links</span>
         </div>
       </div>
 
-      {/* DASHBOARD TAB CONTROLS */}
-      {activeTab === 'home' && (
-        <div style={{ padding: '24px 16px', maxWidth: '600px', margin: '0 auto' }}>
-          
-          {/* Neon Statistics Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px', marginBottom: '24px' }}>
-            <div style={{ background: 'linear-gradient(145deg, #0f172a, #0b1329)', padding: '16px', borderRadius: '12px', border: '1px solid #1e293b', textAlign: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.15)' }}>
-              <small style={{color:'#64748b', fontSize:'11px', fontWeight:'600', textTransform:'uppercase'}}>Total Clicks</small>
-              <h2 style={{ margin: '6px 0 0 0', color: '#fff', fontSize: '24px', fontWeight: '800' }}>{globalNetworkStats.clicks}</h2>
+      {/* 🧭 SLIDING SIDEBAR COMPONENT (MATCHES GRAPHIC MATRIX) */}
+      <div style={{ position: 'fixed', top: 0, left: sidebarOpen ? 0 : '-300px', width: '270px', height: '100vh', background: '#09081a', borderRight: '1px solid #14122d', transition: 'all 0.3s ease', zIndex: 999, padding: '20px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'linear-gradient(135deg, #6366f1, #d946ef)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👑</span>
+              <span style={{ fontWeight: '800', fontSize: '18px' }}>URLKING</span>
             </div>
-            <div style={{ background: 'linear-gradient(145deg, #0f172a, #0b1329)', padding: '16px', borderRadius: '12px', border: '1px solid #1e293b', textAlign: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.15)' }}>
-              <small style={{color:'#64748b', fontSize:'11px', fontWeight:'600', textTransform:'uppercase'}}>Dynamic CPM</small>
-              <h2 style={{ margin: '6px 0 0 0', color: '#38bdf8', fontSize: '24px', fontWeight: '800' }}>${globalNetworkStats.cpm}</h2>
-            </div>
-            <div style={{ background: 'linear-gradient(145deg, #0f172a, #0b1329)', padding: '16px', borderRadius: '12px', border: '1px solid #1e293b', textAlign: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.15)' }}>
-              <small style={{color:'#64748b', fontSize:'11px', fontWeight:'600', textTransform:'uppercase'}}>Wallet Balance</small>
-              <h2 style={{ margin: '6px 0 0 0', color: '#10b981', fontSize: '24px', fontWeight: '800' }}>${globalNetworkStats.earnings.toFixed(3)}</h2>
-            </div>
+            <button onClick={() => setSidebarOpen(false)} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '20px', cursor: 'pointer' }}>✕</button>
           </div>
 
-          {/* Shortener Container */}
-          <div style={{ background: 'linear-gradient(145deg, #0f172a, #0b1329)', padding: '26px', borderRadius: '16px', border: '1px solid #1e293b', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>
-            <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#94a3b8', fontWeight: '600' }}>🔗 Create Short Encrypted Link URL</h4>
-            <input type="url" placeholder="Paste your long destination path here..." style={{ width: '100%', padding: '14px', background: '#060b18', border: '1px solid #334155', borderRadius: '8px', color: '#fff', marginBottom: '14px', boxSizing: 'border-box', outline: 'none', fontSize: '14px' }} value={longUrl} onChange={(e) => setLongUrl(e.target.value)} />
-            <button onClick={handleShorten} style={{ width: '100%', padding: '14px', background: 'linear-gradient(135deg, #38bdf8, #0284c7)', color: '#030712', border: 'none', borderRadius: '8px', fontWeight: '800', fontSize: '14px', cursor: 'pointer', boxShadow: '0 4px 14px rgba(56, 189, 248, 0.2)' }}>Shorten Link Node</button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <button onClick={() => { setActiveTab('home'); setSidebarOpen(false); }} style={{ textAlgin: 'left', textAlign: 'left', width: '100%', padding: '12px 16px', background: activeTab === 'home' ? 'linear-gradient(90deg, #18153c, #0d0b24)' : 'none', border: 'none', borderRadius: '10px', color: activeTab === 'home' ? '#818cf8' : '#94a3b8', cursor: 'pointer', fontWeight: '600', fontSize: '14px' }}>📊 Statistics</button>
+            <button onClick={() => { setActiveTab('manage'); setSidebarOpen(false); }} style={{ textAlgin: 'left', textAlign: 'left', width: '100%', padding: '12px 16px', background: activeTab === 'manage' ? 'linear-gradient(90deg, #18153c, #0d0b24)' : 'none', border: 'none', borderRadius: '10px', color: activeTab === 'manage' ? '#818cf8' : '#94a3b8', cursor: 'pointer', fontWeight: '600', fontSize: '14px' }}>📁 Files & Links</button>
+            {isAdmin && <button onClick={() => { setActiveTab('admin'); setSidebarOpen(false); }} style={{ textAlgin: 'left', textAlign: 'left', width: '100%', padding: '12px 16px', background: activeTab === 'admin' ? 'linear-gradient(90deg, #18153c, #0d0b24)' : 'none', border: 'none', borderRadius: '10px', color: '#f59e0b', cursor: 'pointer', fontWeight: '600', fontSize: '14px' }}>⚙️ Admin Rules</button>}
           </div>
         </div>
-      )}
 
-      {/* LINKS LOGS MANAGEMENT LIST */}
-      {activeTab === 'manage' && (
-        <div style={{ padding: '24px 16px', maxWidth: '600px', margin: '0 auto' }}>
-          <div style={{ background: '#0f172a', padding: '20px', borderRadius: '16px', border: '1px solid #1e293b', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>
-            <h3 style={{ margin: '0 0 16px 0', fontSize: '15px', color: '#38bdf8', fontWeight: '700' }}>📋 Active Encrypted Network History Logs</h3>
-            {userLinks.length === 0 && <p style={{ color: '#64748b', fontSize: '13px', textAlign: 'center' }}>No links generated on this core instance layer.</p>}
-            {userLinks.map((l, i) => (
-              <div key={i} style={{ background: '#060b18', padding: '14px', marginBottom: '10px', borderRadius: '8px', border: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '13px', color: '#e2e8f0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '75%', fontWeight: '500' }}>{l.shortUrl}</span>
-                <button onClick={() => { navigator.clipboard.writeText(l.shortUrl); alert("Copied!"); }} style={{ background: '#38bdf8', border: 'none', color: '#000', padding: '6px 12px', borderRadius: '6px', fontSize:
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#0d0b22', padding: '12px', borderRadius: '12px', marginBottom: '15px' }}>
+            <div style={{ width: '35px', height: '35px', background: '#312e81', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#818cf8', fontWeight: 'bold' }}>L</div>
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: '700' }}>lgdarkyt9101</div>
+              <div style={{ fontSize: '11px', color: '#10b981' }}>● Online</div>
+            </div>
+          </div>
+          <button onClick={() => signOut(auth)} style={{ width: '100%', padding: '10px', background: 'none', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '13px' }}>Logout</button>
+        </div>
+      </div>
+
+      {/* HOME DASHBOARD PLATFORM VIEW */}
+      {activeTab === 'home' && (
+        <div style={{ padding: '20px 14px', maxWidth: '600px', margin: '0 auto' }}>
+          
+          <div style={{ marginBottom: '15px' }}>
+            <h2 style={{ fontSize: '22px', fontWeight: '800', margin: '0 0 4px 0' }}>Dashboard</h2>
+            <small style={{ color: '#64748b' }}>Track your performance.</small>
+          </div>
+
+          {/* 4x Grid Metric Blocks Layout */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ background: '#0a081d', padding: '14px 16px', borderRadius: '14px', border: '1px solid #141130' }}>
+              <small style={{ color: '#64748b', fontSize: '11px', fontWeight: '600' }}>💼 WALLET</small>
+              <h3 style={{ margin: '6px 0 0 0', fontSize: '20px', fontWeight: '800' }}>${globalNetworkStats.earnings.toFixed(2)}</h3>
+            </div>
+            <div style={{ background: '#0a081d', padding: '14px 16px', borderRadius: '14px', border: '1px solid #141130' }}>
+              <small style={{ color: '#64748b', fontSize: '11px', fontWeight: '600' }}>🔮 CPM</small>
+              <h3 style={{ margin: '6px 0 0 0', fontSize: '20px', fontWeight: '800', color: '#818cf8' }}>${globalNetworkStats.cpm.toFixed(2)}</h3>
+            </div>
+            <div style={{ background: '#0a081d', padding: '14px 16px', borderRadius: '14px', border: '1px solid #141130' }}>
+              <small style={{ color: '#64748b', fontSize: '11px', fontWeight: '600' }}>✅ TOTAL APPROVAL</small>
+              <h3 style={{ margin: '6px 0 0 0', fontSize: '20px', fontWeight: '800', color: '#10b981' }}>$2.00</h3>
+            </div>
+            <div style={{ background: '#0a081d', padding: '14px 16px', borderRadius: '14px', border: '1px solid #141130' }}>
+              <small style={{ color: '#64748b', fontSize: '11px', fontWeight: '600' }}>🏆 LIFETIME EARNING</small>
+              <h3 style={{ margin: '6px 0 0 0', fontSize: '20px', fontWeight: '800', color: '#fbbf24' }}>$3.70</h3>
+            </div>
+          </div>
+
+          {/* Premium Custom Gradient URL Shortener Wrapper */}
+          <div style={{ background: 'linear-gradient(135deg, #0e163a, #2e1035)', padding: '24px 20px', borderRadius: '20px', border: '1px solid #231942', boxShadow: '0 8px 20px rgba(0,0,0,0.3)', marginBottom: '20px' }}>
+            <h4 style={{ margin: '0 0 16px 0', fontSize: '14px', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px' }}>📝 Shorten New URL</h4>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div>
+                <input type="url" placeholder="Your URL Here (https://...)" style={{ width: '100%', padding: '12px 14px', background: '#050311', border: '1px solid #191438', borderRadius: '10px', color: '#fff', boxSizing: 'border-box', outline: 'none', fontSize: '13px' }} value={longUrl} onChange={(e) => setLongUrl(e.target.value)} />
+              </div>
+              
+              <div>
+                <label style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '6
