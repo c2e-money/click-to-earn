@@ -44,15 +44,7 @@ export default function ClickToEarnUltimate() {
   const [stageTimer, setStageTimer] = useState(10);
   const [lockedDestinationUrl, setLockedDestinationUrl] = useState('');
 
-  useEffect(() => {
-    getDoc(doc(db, "system", "settings")).then(s => {
-      if (s.exists()) {
-        const d = s.data(); setAdminCpm(Number(d.cpm || 3)); setAdminAdDomain(d.adDomain || "rightyrely.com");
-        setAdminBannerKey(d.bannerKey || "23591d15e448b5bf1900c3bf28352b68"); setAdminSmartLink(d.smartLink || "");
-      }
-    });
-  }, [isRoutingActive, activeTab]);
-
+  // 1. SUPREME HIGH-PRIORITY ROUTING INJECTION (Dashboard loop fix)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const token = new URLSearchParams(window.location.search).get('go');
@@ -67,6 +59,15 @@ export default function ClickToEarnUltimate() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    getDoc(doc(db, "system", "settings")).then(s => {
+      if (s.exists()) {
+        const d = s.data(); setAdminCpm(Number(d.cpm || 3)); setAdminAdDomain(d.adDomain || "rightyrely.com");
+        setAdminBannerKey(d.bannerKey || "23591d15e448b5bf1900c3bf28352b68"); setAdminSmartLink(d.smartLink || "");
+      }
+    });
+  }, [isRoutingActive, activeTab]);
 
   useEffect(() => {
     if (isRoutingActive && stageTimer > 0) {
@@ -107,6 +108,8 @@ export default function ClickToEarnUltimate() {
     const finalAlias = alias.trim() || Math.random().toString(36).substring(2, 7);
     const generatedPath = `${window.location.origin}?go=${finalAlias}`;
     await addDoc(collection(db, "links"), { userId: user.uid, originalUrl: longUrl, shortUrl: generatedPath, alias: finalAlias, expiry: expiryDate, clicks: 0 });
+    
+    // Set response link, clear states instantly
     setJustShortenedUrl(generatedPath);
     setLongUrl(''); setAlias(''); setExpiryDate('');
   };
@@ -121,21 +124,20 @@ export default function ClickToEarnUltimate() {
     </div>
   );
 
-  if (authLoading) return <div style={{ background: '#04030a', color: '#6366f1', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'sans-serif' }}>🔄 Loading Matrix...</div>;
-
+  // Global Multi-Stage Routing Render Layer (Stops Dashboard Leaks)
   if (isRoutingActive) {
     return (
       <div style={{ background: '#04030a', color: '#fff', minHeight: '100vh', padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: 'sans-serif' }}>
-        <div style={{ padding: '6px 12px', borderRadius: '20px', background: '#0e0b20', color: '#a78bfa', fontSize: '12px', border: '1px solid #1f1938' }}>🔒 Checking Security • Stage {currentStage}/4</div>
+        <div style={{ padding: '6px 12px', borderRadius: '20px', background: '#0e0b20', color: '#a78bfa', fontSize: '12px', border: '1px solid #1f1938' }}>🔒 Security Node Check • Stage {currentStage}/4</div>
         {currentStage !== 4 && <AdIframeBlock />}
         <div style={{ background: '#0e0b20', padding: '25px', borderRadius: '16px', border: '1px solid #1c1736', width: '100%', maxWidth: '420px', textAlign: 'center', margin: '20px 0' }}>
-          {stageTimer > 0 ? ( <div>🔄 Verification Processing... <b style={{ color: '#fbbf24' }}>{stageTimer}s</b></div> ) : (
+          {stageTimer > 0 ? ( <div>🔄 Processing Engine Protocols... <b style={{ color: '#fbbf24' }}>{stageTimer}s</b></div> ) : (
             currentStage === 4 ? (
               <div>
                 <div style={{ background: '#1e40af', padding: '12px', borderRadius: '6px', marginBottom: '12px', fontSize: '13px' }}><a href="https://t.me/YOUR_CHANNEL" target="_blank" style={{ color: '#fff', textDecoration: 'none' }}>💬 Join Telegram Updates Channel</a></div>
-                <button onClick={() => window.location.replace(lockedDestinationUrl.trim().startsWith('http') ? lockedDestinationUrl.trim() : 'https://' + lockedDestinationUrl.trim())} style={{ width: '100%', padding: '14px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '800', cursor: 'pointer' }}>🚀 UNLOCK TARGET LINK</button>
+                <button onClick={() => window.location.replace(lockedDestinationUrl.trim().startsWith('http') ? lockedDestinationUrl.trim() : 'https://' + lockedDestinationUrl.trim())} style={{ width: '100%', padding: '14px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '800', cursor: 'pointer' }}>🚀 UNLOCK TARGET DESTINATION LINK</button>
               </div>
-            ) : ( <button onClick={() => { setCurrentStage(currentStage + 1); setStageTimer(currentStage + 1 === 4 ? 5 : 8); }} style={{ width: '100%', padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>PROCEED STEP ➡️</button> )
+            ) : ( <button onClick={() => { setCurrentStage(currentStage + 1); setStageTimer(currentStage + 1 === 4 ? 5 : 8); }} style={{ width: '100%', padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>PROCEED CORE STEP ➡️</button> )
           )}
         </div>
         {currentStage !== 4 && <AdIframeBlock />}
@@ -143,15 +145,17 @@ export default function ClickToEarnUltimate() {
     );
   }
 
+  if (authLoading) return <div style={{ background: '#04030a', color: '#6366f1', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'sans-serif' }}>🔄 Loading Matrix...</div>;
+
   if (!user) {
     return (
       <div style={{ backgroundColor: '#04030a', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', fontFamily: 'sans-serif', padding: '0 16px' }}>
         <h1 style={{ fontWeight: '900', color: '#fff', fontSize: '26px', marginBottom: '20px', letterSpacing: '1px' }}>💸 CLICK TO EARN</h1>
         <div style={{ background: '#09081d', padding: '30px', borderRadius: '20px', border: '1px solid #1a153a', width: '100%', maxWidth: '380px', boxSizing: 'border-box' }}>
-          <h2 style={{ textAlign: 'center', color: '#a78bfa', margin: '0 0 20px 0', fontSize: '18px' }}>{isSignUp ? "Register Portal Profile" : "Identity Authorization Login"}</h2>
+          <h2 style={{ textAlign: 'center', color: '#a78bfa', margin: '0 0 20px 0', fontSize: '18px' }}>{isSignUp ? "Register Account Node" : "Identity Authorization Login"}</h2>
           <input type="email" placeholder="Email Address" style={{ width: '100%', padding: '12px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '12px', boxSizing: 'border-box' }} value={email} onChange={(e) => setEmail(e.target.value)} />
           <input type="password" placeholder="Password" style={{ width: '100%', padding: '12px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '20px', boxSizing: 'border-box' }} value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button onClick={handleAuth} style={{ width: '100%', padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>{isSignUp ? "Sign Up" : "Sign In"}</button>
+          <button onClick={handleAuth} style={{ width: '100%', padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>{isSignUp ? "Sign Up Node" : "Sign In Router"}</button>
           <p onClick={() => setIsSignUp(!isSignUp)} style={{ color: '#64748b', fontSize: '12px', textAlign: 'center', marginTop: '15px', cursor: 'pointer' }}>{isSignUp ? "Switch to Login" : "Create New Workspace Account"}</p>
         </div>
       </div>
@@ -165,7 +169,7 @@ export default function ClickToEarnUltimate() {
           <button onClick={() => setSidebarOpen(true)} style={{ background: '#100e2b', border: 'none', color: '#fff', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer' }}>☰</button>
           <span style={{ fontWeight: '800', color: '#fff', fontSize: '16px', letterSpacing: '0.5px' }}>💸 CLICK TO EARN</span>
         </div>
-        <span style={{ background: '#100e2b', color: '#818cf8', padding: '6px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '700' }}>Active Node</span>
+        <span style={{ background: '#100e2b', color: '#818cf8', padding: '6px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '700' }}>Active Router Node</span>
       </div>
 
       <div style={{ position: 'fixed', top: 0, left: sidebarOpen ? 0 : '-280px', width: '250px', height: '100vh', background: '#09081a', borderRight: '1px solid #14122d', transition: '0.3s ease', zIndex: 999, padding: '20px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -184,7 +188,7 @@ export default function ClickToEarnUltimate() {
         <div style={{ padding: '20px 14px', maxWidth: '550px', margin: '0 auto' }}>
           <div style={{ marginBottom: '15px' }}>
             <h2 style={{ fontSize: '22px', fontWeight: '800', margin: '0' }}>Dashboard</h2>
-            <small style={{ color: '#64748b' }}>Track your metrics performance logs.</small>
+            <small style={{ color: '#64748b' }}>Track metrics performance nodes configuration.</small>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px', textAlign: 'center' }}>
@@ -204,18 +208,19 @@ export default function ClickToEarnUltimate() {
             </div>
           </div>
 
+          {/* 🔥 DYNAMIC INSTANT ACTIONABLE COPY CARD */}
           {justShortenedUrl && (
             <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b981', padding: '16px', borderRadius: '12px', marginTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ overflow: 'hidden', width: '75%' }}>
                 <small style={{ color: '#10b981', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>✓ LINK GENERATED SUCCESSFULLY:</small>
                 <span style={{ fontSize: '13px', color: '#fff', whiteSpace: 'nowrap' }}>{justShortenedUrl}</span>
               </div>
-              <button onClick={() => { navigator.clipboard.writeText(justShortenedUrl); alert("Copied successfully!"); }} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Copy Link</button>
+              <button onClick={() => { navigator.clipboard.writeText(justShortenedUrl); alert("Copied successfully to clipboard!"); }} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Copy Link</button>
             </div>
           )}
 
           <div style={{ background: '#0a081d', padding: '15px', borderRadius: '12px', border: '1px solid #141130', marginTop: '15px' }}>
-            <small style={{ color: '#64748b' }}>TOTAL INTERACTION CLICKS</small>
+            <small style={{ color: '#64748b' }}>TOTAL TRACKED SYSTEM CLICKS</small>
             <h2 style={{ margin: '4px 0 0 0', fontSize: '24px' }}>{globalNetworkStats.clicks}</h2>
           </div>
         </div>
@@ -244,9 +249,4 @@ export default function ClickToEarnUltimate() {
             <input type="text" placeholder="Banner Key" style={{ width: '100%', padding: '10px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '12px', boxSizing: 'border-box' }} value={adminBannerKey} onChange={(e) => setAdminBannerKey(e.target.value)} />
             <button onClick={() => setDoc(doc(db, "system", "settings"), { cpm: Number(adminCpm), adDomain: adminAdDomain, bannerKey: adminBannerKey, smartLink: adminSmartLink }).then(() => alert("Saved Rules Live!"))} style={{ width: '100%', padding: '10px', background: '#f59e0b', color: '#000', border: 'none', borderRadius: '6px', fontWeight: '800', cursor: 'pointer' }}>SAVE CORE PARAMETERS</button>
           </div>
-        </div>
-      )}
-    </div>
-  );
-        }
-          
+        </di
