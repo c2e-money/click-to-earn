@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc, getDoc } from 'firebase/firestore';
 
 const cfg = {
   apiKey: "AIzaSyD3Yl0BR4o6qEX6MeXYjX6Qjlr5BCid5C8",
@@ -19,7 +19,6 @@ export default function ClickToEarnUltimate() {
   const [tab, setTab] = useState('home');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const [isUp, setIsUp] = useState(false);
@@ -30,7 +29,6 @@ export default function ClickToEarnUltimate() {
   const [links, setLinks] = useState([]);
   const [side, setSide] = useState(false);
   const [stats, setStats] = useState({ clk: 0, earn: 0, cpm: 3.0 });
-  
   const [rt, setRt] = useState(false), [stage, setStage] = useState(1), [tmr, setTmr] = useState(10), [dest, setDest] = useState('');
   const [isTokenFound, setIsTokenFound] = useState(false);
 
@@ -43,7 +41,7 @@ export default function ClickToEarnUltimate() {
           if (!snap.empty) {
             const d = snap.docs[0]; setDest(d.data().originalUrl); setRt(true); setStage(1); setTmr(10);
             updateDoc(doc(db, "links", d.id), { clicks: (d.data().clicks || 0) + 1 });
-          } else { alert("Invalid Short URL node."); window.location.replace(window.location.origin); }
+          } else { alert("Invalid Short URL."); window.location.replace(window.location.origin); }
         }).catch(() => setIsTokenFound(false));
       }
     }
@@ -55,27 +53,20 @@ export default function ClickToEarnUltimate() {
 
   useEffect(() => {
     if (rt) {
-      if (stage !== 4) {
-        if (!document.getElementById('ad-popunder-node')) {
-          const pop = document.createElement('script'); pop.id = 'ad-popunder-node';
-          pop.src = "https://rightyrely.com/b9/4d/11/b94d112da7a9eca56020cdc86de372e4.js";
-          document.body.appendChild(pop);
-        }
-      } else {
-        document.getElementById('ad-popunder-node')?.remove();
-      }
+      if (stage !== 4 && !document.getElementById('ad-popunder-node')) {
+        const pop = document.createElement('script'); pop.id = 'ad-popunder-node';
+        pop.src = "https://rightyrely.com/b9/4d/11/b94d112da7a9eca56020cdc86de372e4.js"; document.body.appendChild(pop);
+      } else if (stage === 4) document.getElementById('ad-popunder-node')?.remove();
 
       if (!document.getElementById('ad-social-node')) {
         const soc = document.createElement('script'); soc.id = 'ad-social-node';
-        soc.src = "https://rightyrely.com/25/35/24/253524e061c1d53e48e5610b6dfa52e6.js";
-        document.body.appendChild(soc);
+        soc.src = "https://rightyrely.com/25/35/24/253524e061c1d53e48e5610b6dfa52e6.js"; document.body.appendChild(soc);
       }
 
       if (!document.getElementById('ad-native-node')) {
         const nat = document.createElement('script'); nat.id = 'ad-native-node';
         nat.async = true; nat.setAttribute("data-cfasync", "false");
-        nat.src = "https://rightyrely.com/9a3ee810f662f820251422648340bfa6/invoke.js";
-        document.body.appendChild(nat);
+        nat.src = "https://rightyrely.com/9a3ee810f662f820251422648340bfa6/invoke.js"; document.body.appendChild(nat);
       }
     }
   }, [rt, stage]);
@@ -89,8 +80,7 @@ export default function ClickToEarnUltimate() {
 
   useEffect(() => {
     return onAuthStateChanged(auth, (u) => {
-      if (u) { setUser(u); if (u.email.includes("admin")) setIsAdmin(true); loadLogs(u.uid); } 
-      else { setUser(null); setIsAdmin(false); }
+      if (u) { setUser(u); loadLogs(u.uid); } else { setUser(null); }
       setLoading(false);
     });
   }, []);
@@ -119,11 +109,11 @@ export default function ClickToEarnUltimate() {
       {[...Array(4)].map((_, i) => (
         <div key={`nat-${i}`} style={{ background: '#0a0915', padding: '12px', borderRadius: '8px', border: '1px solid #1c1a30', textAlign: 'center' }}>
           <div id="container-9a3ee810f662f820251422648340bfa6"></div>
-          <span style={{ fontSize: '10px', color: '#4b5563' }}>Native Performance Unit #{i+1}</span>
+          <span style={{ fontSize: '10px', color: '#4b5563' }}>Native Unit #{i+1}</span>
         </div>
       ))}
       {[...Array(4)].map((_, i) => (
-        <button key={`smart-${i}`} onClick={() => window.open("https://rightyrely.com/t423kum4w?key=c6cfb7985a15d264407b4d6d80a97a0a", '_blank')} style={{ background: 'linear-gradient(90deg, #1e1b4b, #311042)', color: '#38bdf8', padding: '14px', border: '1px solid #4f46e5', borderRadius: '8px', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>⚡ MEDIA REPOSITORY CORE DOWNLOADING PATH #00{i+1}</button>
+        <button key={`smart-${i}`} onClick={() => window.open("https://rightyrely.com/t423kum4w?key=c6cfb7985a15d264407b4d6d80a97a0a", '_blank')} style={{ background: 'linear-gradient(90deg, #1e1b4b, #311042)', color: '#38bdf8', padding: '14px', border: '1px solid #4f46e5', borderRadius: '8px', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>⚡ MEDIA ACCESS CORE NODE SERVER #00{i+1}</button>
       ))}
     </div>
   );
@@ -132,27 +122,23 @@ export default function ClickToEarnUltimate() {
     <div className="main-bg font flex-col center p-20">
       <style>{`.main-bg{background:#04030a;min-height:100vh;color:#fff;}.font{font-family:sans-serif;}.flex-col{display:flex;flex-direction:column;}.center{align-items:center;justify-content:center;}.p-20{padding:20px;}.card{background:#0e0b20;padding:25px;border-radius:16px;border:1px solid #1c1736;width:100%;max-width:420px;text-align:center;}.btn{width:100%;padding:14px;background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;}.inp{width:100%;padding:12px;background:#04030a;border:1px solid #231c4f;border-radius:8px;color:#fff;box-sizing:border-box;margin-bottom:12px;outline:none;}`}</style>
       <div style={{padding:'6px 12px',borderRadius:'20px',background:'#0e0b20',color:'#a78bfa',fontSize:'12px',border:'1px solid #1f1938',marginBottom:'15px'}}>🔒 Security Verification Tunnel • Step {stage}/4</div>
-      
       {stage !== 4 && <SupremeAdPlacementMatrix />}
-      
       <div className="card">
         {tmr > 0 ? ( <div>🔄 Processing Traffic Metrics... <b style={{color:'#fbbf24'}}>{tmr}s</b></div> ) : (
           stage === 4 ? (
             <div>
-              <div style={{background:'#1e40af',padding:'12px',borderRadius:'6px',marginBottom:'12px',fontSize:'13px'}}><a href="https://t.me/YOUR_CHANNEL" target="_blank" style={{color:'#fff',textDecoration:'none'}}>💬 Join Our Official Telegram Updates Channel</a></div>
+              <div style={{background:'#1e40af',padding:'12px',borderRadius:'6px',marginBottom:'12px',fontSize:'13px'}}><a href="https://t.me/YOUR_CHANNEL" target="_blank" style={{color:'#fff',textDecoration:'none'}}>💬 Join Our Official Telegram Channel</a></div>
               <button className="btn" style={{background:'#10b981',boxShadow:'0 0 15px #10b981'}} onClick={() => window.location.replace(dest.trim().startsWith('http') ? dest.trim() : 'https://' + dest.trim())}>🚀 UNLOCK FINAL TARGET LINK</button>
             </div>
-          ) : ( <button className="btn" onClick={() => { setStage(stage + 1); setTmr(stage + 1 === 4 ? 5 : 10); window.scrollTo({top:0,behavior:'smooth'}); }}>CONTINUE TO NEXT EXECUTABLE STEP ➡️</button> )
+          ) : ( <button className="btn" onClick={() => { setStage(stage + 1); setTmr(stage + 1 === 4 ? 5 : 10); window.scrollTo({top:0,behavior:'smooth'}); }}>CONTINUE TO NEXT STEP ➡️</button> )
         )}
       </div>
-      
       {stage !== 4 && <SupremeAdPlacementMatrix />}
     </div>
   );
 
   if (isTokenFound) return <div style={{background:'#04030a',color:'#a78bfa',minHeight:'100vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔒 Directing to Traffic Core Verification Instance...</div>;
-
-  if (loading) return <div style={{background:'#04030a',color:'#6366f1',minHeight:'100vh',display:'flex',justify('center'),alignItems:'center',fontFamily:'sans-serif'}}>🔄 Connecting Click To Earn Hub...</div>;
+  if (loading) return <div style={{background:'#04030a',color:'#6366f1',minHeight:'100vh',display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'sans-serif'}}>🔄 Connecting Click To Earn Hub...</div>;
 
   if (!user) return (
     <div className="main-bg font flex-col center p-20">
@@ -171,10 +157,9 @@ export default function ClickToEarnUltimate() {
   return (
     <div style={{backgroundColor:'#04030a',color:'#f1f5f9',minHeight:'100vh',fontFamily:'sans-serif'}}>
       <style>{`.box{background:#0a081d;padding:12px;border-radius:10px;border:1px solid #141130;text-align:center;}.inp{width:100%;padding:10px;background:#050311;border:1px solid #191438;border-radius:8px;color:#fff;box-sizing:border-box;margin-bottom:10px;outline:none;}.btn{width:100%;padding:12px;background:linear-gradient(90deg,#38bdf8,#a855f7);color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;}`}</style>
-      
       <div style={{background:'#090818',padding:'14px 20px',borderBottom:'1px solid #14122d',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
-          <button onClick={() => setSide(true)} style={{background:'#100e2b',border:'none',color:#fff,padding:'8px 12px',borderRadius:'6px',cursor:'pointer'}}>☰</button>
+          <button onClick={() => setSide(true)} style={{background:'#100e2b',border:'none',color:'#fff',padding:'8px 12px',borderRadius:'6px',cursor:'pointer'}}>☰</button>
           <span style={{fontWeight:'800',fontSize:'16px',letterSpacing:'0.5px'}}>💸 CLICK TO EARN</span>
         </div>
       </div>
@@ -234,4 +219,5 @@ export default function ClickToEarnUltimate() {
       )}
     </div>
   );
-        }
+                             }
+          
