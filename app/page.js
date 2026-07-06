@@ -123,109 +123,135 @@ export default function ClickToEarnUltimate() {
   };
 
   const AdPlacementBlockGroup = () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', margin: '10px 0', width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', margin: '15px 0', width: '100%', maxWidth: '468px' }}>
       {[...Array(3)].map((_, i) => (
-        <div key={i} style={{ background: '#111c2e', padding: '10px', borderRadius: '6px', textAlign: 'center' }}>
-          <iframe src={`//${adminAdDomain}/watch.html?key=${adminBannerKey}`} width="468" height="60" frameBorder="0" scrolling="no" style={{ maxWidth: '100%' }}></iframe>
+        <div key={i} style={{ background: '#111928', padding: '10px', borderRadius: '8px', border: '1px solid #1f2a37', display: 'flex', justifyContent: 'center' }}>
+          <iframe src={`//${adminAdDomain}/watch.html?key=${adminBannerKey}`} width="468" height="60" frameBorder="0" scrolling="no" style={{ maxWidth: '100%', border: 'none' }}></iframe>
         </div>
       ))}
-      <button onClick={() => window.open(adminSmartLink, '_blank')} style={{ background: '#38bdf8', color: '#000', padding: '12px', border: 'none', borderRadius: '6px', fontWeight: '700', cursor: 'pointer' }}>⚡ FAST DOWNLOAD ACCESS</button>
+      <button onClick={() => window.open(adminSmartLink, '_blank')} style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: '#fff', padding: '14px', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', letterSpacing: '0.5px' }}>⚡ INSTANT CLOUD ACCESS SYSTEM</button>
     </div>
   );
 
   if (isRoutingActive) {
     return (
-      <div style={{ background: '#070b12', color: '#e2e8f0', minHeight: '100vh', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: 'sans-serif' }}>
-        <div style={{ padding: '6px 12px', borderRadius: '20px', background: '#101726', color: '#38bdf8', fontSize: '12px' }}>🔒 Verification Step {currentStage}/4</div>
+      <div style={{ background: '#0b1329', color: '#f3f4f6', minHeight: '100vh', padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+        <div style={{ padding: '8px 16px', borderRadius: '30px', background: '#1e293b', color: '#38bdf8', fontSize: '12px', fontWeight: '600', border: '1px solid #334155', marginBottom: '15px', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>🔒 Secure Verification Tunnel • Step {currentStage}/4</div>
+        
         {currentStage !== 4 && <AdPlacementBlockGroup />}
-        <div style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', border: '1px solid #1e293b', width: '100%', maxWidth: '450px', textAlign: 'center', margin: '15px 0' }}>
-          {stageTimer > 0 ? ( <div>🔄 Security Scanning... <span style={{ color: '#f59e0b' }}>{stageTimer}s</span></div> ) : (
+        
+        <div style={{ background: 'linear-gradient(145deg, #111c44, #0b1329)', padding: '30px 20px', borderRadius: '16px', border: '1px solid #1e293b', width: '100%', maxWidth: '450px', textAlign: 'center', margin: '20px 0', boxShadow: '0 10px 25px rgba(0,0,0,0.4)' }}>
+          {stageTimer > 0 ? ( 
+            <div style={{ fontSize: '18px', fontWeight: '700', color: '#f1f5f9' }}>
+              🔄 Anti-Bot Scanning... <span style={{ color: '#f59e0b', fontSize: '22px' }}>{stageTimer}s</span>
+            </div> 
+          ) : (
             currentStage === 4 ? (
               <div>
-                <div style={{ background: '#0284c7', padding: '12px', borderRadius: '6px', color: '#fff', marginBottom: '12px' }}><a href="https://t.me/YOUR_CHANNEL" target="_blank" style={{ color: '#fff' }}>💬 Join Our Telegram Updates Portal</a></div>
-                <button onClick={() => window.location.replace(lockedDestinationUrl.trim().startsWith('http') ? lockedDestinationUrl.trim() : 'https://' + lockedDestinationUrl.trim())} style={{ width: '100%', padding: '14px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '800', cursor: 'pointer' }}>🚀 UNLOCK DESTINATION LINK</button>
+                <div style={{ background: 'linear-gradient(90deg, #0284c7, #0369a1)', padding: '14px', borderRadius: '8px', color: '#fff', marginBottom: '16px', fontWeight: '600', fontSize: '14px', boxShadow: '0 4px 10px rgba(2, 132, 199, 0.2)' }}>
+                  <a href="https://t.me/YOUR_CHANNEL" target="_blank" style={{ color: '#fff', textDecoration: 'none', display: 'block' }}>💬 Join Our Official Telegram Updates Portal</a>
+                </div>
+                <button onClick={() => window.location.replace(lockedDestinationUrl.trim().startsWith('http') ? lockedDestinationUrl.trim() : 'https://' + lockedDestinationUrl.trim())} style={{ width: '100%', padding: '16px', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: '800', fontSize: '16px', cursor: 'pointer', boxShadow: '0 6px 20px rgba(16, 185, 129, 0.4)' }}>🚀 UNLOCK TARGET DESTINATION</button>
               </div>
-            ) : ( <button onClick={() => { setCurrentStage(currentStage + 1); setStageTimer(currentStage + 1 === 4 ? 5 : 8); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ width: '100%', padding: '12px', background: '#38bdf8', color: '#030712', border: 'none', borderRadius: '6px', fontWeight: '700', cursor: 'pointer' }}>CONTINUE ➡️</button> )
+            ) : ( 
+              <button onClick={() => { setCurrentStage(currentStage + 1); setStageTimer(currentStage + 1 === 4 ? 5 : 8); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ width: '100%', padding: '15px', background: 'linear-gradient(135deg, #38bdf8, #0284c7)', color: '#030712', border: 'none', borderRadius: '10px', fontWeight: '800', fontSize: '15px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(56, 189, 248, 0.3)' }}>CONTINUE TO NEXT PAGE ➡️</button> 
+            )
           )}
         </div>
+        
         {currentStage !== 4 && <AdPlacementBlockGroup />}
-        <footer style={{ fontSize: '11px', color: '#475d82', marginTop: '20px' }}>Copyright © Click To Earn 2026</footer>
+        <footer style={{ fontSize: '12px', color: '#4b5563', marginTop: '30px', letterSpacing: '0.5px' }}>Copyright © Click To Earn 2026</footer>
       </div>
     );
   }
 
   return (
-    <div style={{ backgroundColor: '#070b12', color: '#f1f5f9', minHeight: '100vh', fontFamily: 'sans-serif' }}>
-      <div style={{ background: '#0f172a', padding: '15px', borderBottom: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontWeight: '800', color: '#38bdf8' }}>CLICK TO EARN</span>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button onClick={() => setActiveTab('home')} style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', fontSize: '12px' }}>Dashboard</button>
-          <button onClick={() => setActiveTab('manage')} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '12px' }}>Links</button>
-          <button onClick={() => setActiveTab('profile')} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '12px' }}>Account</button>
-          {isAdmin && <button onClick={() => setActiveTab('admin')} style={{ background: '#f59e0b', color: '#000', border: 'none', padding: '2px 6px', borderRadius: '4px', fontSize: '11px', fontWeight: '800' }}>👑 Admin</button>}
+    <div style={{ backgroundColor: '#060b18', color: '#f1f5f9', minHeight: '100vh', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      
+      {/* Premium Glassmorphic Header */}
+      <div style={{ background: '#0b1329', padding: '18px 24px', borderBottom: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
+        <span style={{ fontWeight: '900', color: '#38bdf8', fontSize: '20px', letterSpacing: '1px', textShadow: '0 0 10px rgba(56,189,248,0.2)' }}>CLICK TO EARN</span>
+        <div style={{ display: 'flex', gap: '8px', background: '#111928', padding: '4px', borderRadius: '8px', border: '1px solid #1f2a37' }}>
+          <button onClick={() => setActiveTab('home')} style={{ background: activeTab === 'home' ? '#1e293b' : 'none', border: 'none', color: activeTab === 'home' ? '#38bdf8' : '#94a3b8', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'all 0.2s' }}>Dashboard</button>
+          <button onClick={() => setActiveTab('manage')} style={{ background: activeTab === 'manage' ? '#1e293b' : 'none', border: 'none', color: activeTab === 'manage' ? '#38bdf8' : '#94a3b8', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'all 0.2s' }}>Links</button>
+          <button onClick={() => setActiveTab('profile')} style={{ background: activeTab === 'profile' ? '#1e293b' : 'none', border: 'none', color: activeTab === 'profile' ? '#38bdf8' : '#94a3b8', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'all 0.2s' }}>Account</button>
+          {isAdmin && <button onClick={() => setActiveTab('admin')} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#000', border: 'none', padding: '8px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>👑 Control</button>}
         </div>
       </div>
 
+      {/* DASHBOARD TAB CONTROLS */}
       {activeTab === 'home' && (
-        <div style={{ padding: '20px', maxWidth: '500px', margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '20px', textAlign: 'center' }}>
-            <div style={{ background: '#0f172a', padding: '10px', borderRadius: '6px' }}><small style={{color:'#64748b'}}>Clicks</small><br/><b>{globalNetworkStats.clicks}</b></div>
-            <div style={{ background: '#0f172a', padding: '10px', borderRadius: '6px' }}><small style={{color:'#64748b'}}>CPM</small><br/><b style={{color:'#38bdf8'}}>${globalNetworkStats.cpm}</b></div>
-            <div style={{ background: '#0f172a', padding: '10px', borderRadius: '6px' }}><small style={{color:'#64748b'}}>Balance</small><br/><b style={{color:'#10b981'}}>${globalNetworkStats.earnings.toFixed(3)}</b></div>
+        <div style={{ padding: '24px 16px', maxWidth: '600px', margin: '0 auto' }}>
+          
+          {/* Neon Statistics Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px', marginBottom: '24px' }}>
+            <div style={{ background: 'linear-gradient(145deg, #0f172a, #0b1329)', padding: '16px', borderRadius: '12px', border: '1px solid #1e293b', textAlign: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.15)' }}>
+              <small style={{color:'#64748b', fontSize:'11px', fontWeight:'600', textTransform:'uppercase'}}>Total Clicks</small>
+              <h2 style={{ margin: '6px 0 0 0', color: '#fff', fontSize: '24px', fontWeight: '800' }}>{globalNetworkStats.clicks}</h2>
+            </div>
+            <div style={{ background: 'linear-gradient(145deg, #0f172a, #0b1329)', padding: '16px', borderRadius: '12px', border: '1px solid #1e293b', textAlign: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.15)' }}>
+              <small style={{color:'#64748b', fontSize:'11px', fontWeight:'600', textTransform:'uppercase'}}>Dynamic CPM</small>
+              <h2 style={{ margin: '6px 0 0 0', color: '#38bdf8', fontSize: '24px', fontWeight: '800' }}>${globalNetworkStats.cpm}</h2>
+            </div>
+            <div style={{ background: 'linear-gradient(145deg, #0f172a, #0b1329)', padding: '16px', borderRadius: '12px', border: '1px solid #1e293b', textAlign: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.15)' }}>
+              <small style={{color:'#64748b', fontSize:'11px', fontWeight:'600', textTransform:'uppercase'}}>Wallet Balance</small>
+              <h2 style={{ margin: '6px 0 0 0', color: '#10b981', fontSize: '24px', fontWeight: '800' }}>${globalNetworkStats.earnings.toFixed(3)}</h2>
+            </div>
           </div>
-          <div style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', border: '1px solid #1e293b' }}>
-            <input type="url" placeholder="Paste target URL link..." style={{ width: '100%', padding: '10px', background: '#070b12', border: '1px solid #334155', borderRadius: '6px', color: '#fff', marginBottom: '10px', boxSizing:'border-box' }} value={longUrl} onChange={(e) => setLongUrl(e.target.value)} />
-            <button onClick={handleShorten} style={{ width: '100%', padding: '10px', background: '#38bdf8', color: '#030712', border: 'none', borderRadius: '6px', fontWeight: '700' }}>Shorten Link Node</button>
+
+          {/* Premium Form Design */}
+          <div style={{ background: 'linear-gradient(145deg, #0f172a, #0b1329)', padding: '26px', borderRadius: '16px', border: '1px solid #1e293b', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>
+            <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#94a3b8', fontWeight: '600' }}>🔗 Create Short Encrypted Link URL</h4>
+            <input type="url" placeholder="Paste your long destination path here..." style={{ width: '100%', padding: '14px', background: '#060b18', border: '1px solid #334155', borderRadius: '8px', color: '#fff', marginBottom: '14px', boxSizing: 'border-box', outline: 'none', fontSize: '14px', transition: 'border 0.2s' }} value={longUrl} onChange={(e) => setLongUrl(e.target.value)} />
+            <button onClick={handleShorten} style={{ width: '100%', padding: '14px', background: 'linear-gradient(135deg, #38bdf8, #0284c7)', color: '#030712', border: 'none', borderRadius: '8px', fontWeight: '800', fontSize: '14px', cursor: 'pointer', boxShadow: '0 4px 14px rgba(56, 189, 248, 0.2)', transition: 'all 0.2s' }}>Shorten Link Node</button>
           </div>
         </div>
       )}
 
+      {/* LINKS LOGS MANAGEMENT LIST */}
       {activeTab === 'manage' && (
-        <div style={{ padding: '20px', maxWidth: '500px', margin: '0 auto' }}>
-          <div style={{ background: '#0f172a', padding: '15px', borderRadius: '12px' }}>
+        <div style={{ padding: '24px 16px', maxWidth: '600px', margin: '0 auto' }}>
+          <div style={{ background: '#0f172a', padding: '20px', borderRadius: '16px', border: '1px solid #1e293b', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '15px', color: '#38bdf8', fontWeight: '700' }}>📋 Active Encrypted Network History Logs</h3>
+            {userLinks.length === 0 && <p style={{ color: '#64748b', fontSize: '13px', textAlign: 'center' }}>No links generated on this core instance layer.</p>}
             {userLinks.map((l, i) => (
-              <div key={i} style={{ background: '#070b12', padding: '8px', marginBottom: '8px', borderRadius: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '12px', color: '#38bdf8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '75%' }}>{l.shortUrl}</span>
-                <button onClick={() => { navigator.clipboard.writeText(l.shortUrl); alert("Copied!"); }} style={{ background: '#38bdf8', border: 'none', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: '700' }}>Copy</button>
+              <div key={i} style={{ background: '#060b18', padding: '14px', marginBottom: '10px', borderRadius: '8px', border: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '13px', color: '#e2e8f0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '75%', fontWeight: '500' }}>{l.shortUrl}</span>
+                <button onClick={() => { navigator.clipboard.writeText(l.shortUrl); alert("Copied!"); }} style={{ background: '#38bdf8', border: 'none', color: '#000', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Copy</button>
               </div>
             ))}
           </div>
         </div>
       )}
 
+      {/* ACCOUNT AUTHORIZATION PROFILE */}
       {activeTab === 'profile' && (
-        <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
+        <div style={{ padding: '24px 16px', maxWidth: '450px', margin: '0 auto' }}>
           {!user ? (
-            <div style={{ background: '#0f172a', padding: '20px', borderRadius: '12px' }}>
-              <input type="email" placeholder="Email" style={{ width: '100%', padding: '10px', background: '#070b12', border: '1px solid #334155', borderRadius: '6px', color: '#fff', marginBottom: '10px', boxSizing:'border-box' }} value={email} onChange={(e) => setEmail(e.target.value)} />
-              <input type="password" placeholder="Password" style={{ width: '100%', padding: '10px', background: '#070b12', border: '1px solid #334155', borderRadius: '6px', color: '#fff', marginBottom: '10px', boxSizing:'border-box' }} value={password} onChange={(e) => setPassword(e.target.value)} />
-              <button onClick={handleAuth} style={{ width: '100%', padding: '10px', background: '#38bdf8', color: '#030712', border: 'none', borderRadius: '6px', fontWeight: '700' }}>{isSignUp ? "Register" : "Login"}</button>
-              <button onClick={() => setIsSignUp(!isSignUp)} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '11px', width: '100%', marginTop: '10px' }}>{isSignUp ? "Login Instead" : "Create Account"}</button>
+            <div style={{ background: '#0f172a', padding: '26px', borderRadius: '16px', border: '1px solid #1e293b', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>
+              <h3 style={{ textAlign: 'center', marginBottom: '18px', fontSize: '16px', color: '#38bdf8' }}>{isSignUp ? "Create Secure Account" : "Identity Portal Access"}</h3>
+              <input type="email" placeholder="Database Email Address" style={{ width: '100%', padding: '12px', background: '#060b18', border: '1px solid #334155', borderRadius: '8px', color: '#fff', marginBottom: '12px', boxSizing: 'border-box', outline: 'none' }} value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input type="password" placeholder="System Auth Password" style={{ width: '100%', padding: '12px', background: '#060b18', border: '1px solid #334155', borderRadius: '8px', color: '#fff', marginBottom: '16px', boxSizing: 'border-box', outline: 'none' }} value={password} onChange={(e) => setPassword(e.target.value)} />
+              <button onClick={handleAuth} style={{ width: '100%', padding: '12px', background: 'linear-gradient(135deg, #38bdf8, #0284c7)', color: '#030712', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>{isSignUp ? "Deploy Node Signature" : "Access Console Dashboard"}</button>
+              <button onClick={() => setIsSignUp(!isSignUp)} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '12px', width: '100%', marginTop: '12px', cursor: 'pointer' }}>{isSignUp ? "Already registered? Login Node" : "Request New Profile Framework"}</button>
             </div>
           ) : (
-            <div style={{ background: '#0f172a', padding: '20px', borderRadius: '12px', textAlign: 'center' }}>
-              <p style={{ fontSize: '13px' }}>{user.email}</p>
-              <button onClick={() => signOut(auth)} style={{ padding: '8px 16px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: '700' }}>Logout</button>
+            <div style={{ background: '#0f172a', padding: '24px', borderRadius: '16px', border: '1px solid #1e293b', textAlign: 'center' }}>
+              <div style={{ width: '50px', height: '50px', background: '#1e293b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px auto', border: '2px solid #38bdf8', color: '#38bdf8', fontWeight: 'bold' }}>U</div>
+              <p style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9', marginBottom: '20px' }}>{user.email}</p>
+              <button onClick={() => signOut(auth)} style={{ padding: '10px 22px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.2)' }}>Revoke Database Connection</button>
             </div>
           )}
         </div>
       )}
 
+      {/* ADMIN LEVEL SUPREME CORE OVERVIEW */}
       {activeTab === 'admin' && isAdmin && (
-        <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-          <div style={{ background: '#1e1b4b', padding: '20px', borderRadius: '12px', marginBottom: '15px' }}>
-            <h3 style={{ margin: '0 0 10px 0', color: '#f59e0b', fontSize: '15px' }}>👑 Supreme Matrix Panel</h3>
-            <input type="number" placeholder="CPM Rate" style={{ width: '100%', padding: '8px', background: '#070b12', border: '1px solid #334155', borderRadius: '6px', color: '#fff', marginBottom: '8px' }} value={adminCpm} onChange={(e) => setAdminCpm(e.target.value)} />
-            <input type="text" placeholder="Ad Domain" style={{ width: '100%', padding: '8px', background: '#070b12', border: '1px solid #334155', borderRadius: '6px', color: '#fff', marginBottom: '8px' }} value={adminAdDomain} onChange={(e) => setAdminAdDomain(e.target.value)} />
-            <input type="text" placeholder="Banner Key" style={{ width: '100%', padding: '8px', background: '#070b12', border: '1px solid #334155', borderRadius: '6px', color: '#fff', marginBottom: '8px' }} value={adminBannerKey} onChange={(e) => setAdminBannerKey(e.target.value)} />
-            <input type="text" placeholder="SmartLink Url" style={{ width: '100%', padding: '8px', background: '#070b12', border: '1px solid #334155', borderRadius: '6px', color: '#fff', marginBottom: '10px' }} value={adminSmartLink} onChange={(e) => setAdminSmartLink(e.target.value)} />
-            <button onClick={() => setDoc(doc(db, "system", "settings"), { cpm: Number(adminCpm), adDomain: adminAdDomain, bannerKey: adminBannerKey, nativeKey: adminNativeKey, smartLink: adminSmartLink }).then(() => alert("Saved Rules Live!"))} style={{ width: '100%', padding: '10px', background: '#f59e0b', color: '#000', border: 'none', borderRadius: '6px', fontWeight: '800' }}>SAVE ENGINE PARAMETERS</button>
-          </div>
-          <div style={{ background: '#0f172a', padding: '15px', borderRadius: '12px', maxHeight: '180px', overflowY: 'auto' }}>
-            {allSystemLinks.map((l, i) => ( <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', borderBottom: '1px solid #1e293b', padding: '4px 0' }}><span style={{color:'#94a3b8', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', width:'60%'}}>{l.shortUrl}</span><span style={{color:'#10b981'}}>Clicks: {l.clicks||0}</span></div> ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+        <div style={{ padding: '24px 16px', maxWidth: '650px', margin: '0 auto' }}>
+          <div style={{ background: 'linear-gradient(145deg, #1e1b4b, #0f172a)', padding: '24px', borderRadius: '16px', border: '1px solid #4338ca', marginBottom: '20px', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }}>
+            <h3 style={{ margin: '0 0 16px 0', color: '#f59e0b', fontSize: '16px', fontWeight: '800' }}>👑 Supreme Matrix Configuration Panel</h3>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+              <div>
+                <label style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '600' }}>Global Traffic CPM ($)</label>
+                <input type="number" style={{ width: '100%', padding: '10px', background: '#060b18', border: '1px solid #334155', borderRadius: '8px', color: '#fff', marginTop: '4px', 
