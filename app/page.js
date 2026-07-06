@@ -25,9 +25,12 @@ export default function ClickToEarnUltimate() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
+  
   const [longUrl, setLongUrl] = useState('');
   const [alias, setAlias] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
+  const [justShortenedUrl, setJustShortenedUrl] = useState('');
+
   const [userLinks, setUserLinks] = useState([]);
   const [allSystemLinks, setAllSystemLinks] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -104,8 +107,10 @@ export default function ClickToEarnUltimate() {
   const handleShorten = async () => {
     if (!longUrl) return alert("URL Missing!");
     const finalAlias = alias.trim() || Math.random().toString(36).substring(2, 7);
-    await addDoc(collection(db, "links"), { userId: user.uid, originalUrl: longUrl, shortUrl: `${window.location.origin}?go=${finalAlias}`, alias: finalAlias, expiry: expiryDate, clicks: 0 });
-    setLongUrl(''); setAlias(''); setExpiryDate(''); alert("Shortened!"); setActiveTab('manage');
+    const generatedPath = `${window.location.origin}?go=${finalAlias}`;
+    await addDoc(collection(db, "links"), { userId: user.uid, originalUrl: longUrl, shortUrl: generatedPath, alias: finalAlias, expiry: expiryDate, clicks: 0 });
+    setJustShortenedUrl(generatedPath);
+    setLongUrl(''); setAlias(''); setExpiryDate('');
   };
 
   const AdIframeBlock = () => (
@@ -142,13 +147,14 @@ export default function ClickToEarnUltimate() {
 
   if (!user) {
     return (
-      <div style={{ backgroundColor: '#04030a', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'sans-serif', padding: '0 16px' }}>
+      <div style={{ backgroundColor: '#04030a', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', fontFamily: 'sans-serif', padding: '0 16px' }}>
+        <h1 style={{ fontWeight: '900', color: '#fff', fontSize: '26px', marginBottom: '20px', letterSpacing: '1px' }}>💸 CLICK TO EARN</h1>
         <div style={{ background: '#09081d', padding: '30px', borderRadius: '20px', border: '1px solid #1a153a', width: '100%', maxWidth: '380px', boxSizing: 'border-box' }}>
-          <h2 style={{ textAlign: 'center', color: '#a78bfa', margin: '0 0 20px 0' }}>{isSignUp ? "Register" : "Login Dashboard"}</h2>
+          <h2 style={{ textAlign: 'center', color: '#a78bfa', margin: '0 0 20px 0', fontSize: '18px' }}>{isSignUp ? "Register Portal Profile" : "Identity Authorization Login"}</h2>
           <input type="email" placeholder="Email Address" style={{ width: '100%', padding: '12px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '12px', boxSizing: 'border-box' }} value={email} onChange={(e) => setEmail(e.target.value)} />
           <input type="password" placeholder="Password" style={{ width: '100%', padding: '12px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '20px', boxSizing: 'border-box' }} value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button onClick={handleAuth} style={{ width: '100%', padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>{isSignUp ? "Sign Up" : "Sign In"}</button>
-          <p onClick={() => setIsSignUp(!isSignUp)} style={{ color: '#64748b', fontSize: '12px', textAlign: 'center', marginTop: '15px', cursor: 'pointer' }}>{isSignUp ? "Switch to Login" : "Create Niche Layout Account"}</p>
+          <button onClick={handleAuth} style={{ width: '100%', padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>{isSignUp ? "Sign Up Node" : "Sign In Router"}</button>
+          <p onClick={() => setIsSignUp(!isSignUp)} style={{ color: '#64748b', fontSize: '12px', textAlign: 'center', marginTop: '15px', cursor: 'pointer' }}>{isSignUp ? "Switch to Login" : "Create New Workspace Account"}</p>
         </div>
       </div>
     );
@@ -159,18 +165,18 @@ export default function ClickToEarnUltimate() {
       <div style={{ background: '#090818', padding: '14px 20px', borderBottom: '1px solid #14122d', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button onClick={() => setSidebarOpen(true)} style={{ background: '#100e2b', border: 'none', color: '#fff', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer' }}>☰</button>
-          <span style={{ fontWeight: '800', color: '#fff', fontSize: '16px' }}>👑 URLKING</span>
+          <span style={{ fontWeight: '800', color: '#fff', fontSize: '16px', letterSpacing: '0.5px' }}>💸 CLICK TO EARN</span>
         </div>
-        <span style={{ background: '#100e2b', color: '#818cf8', padding: '6px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '700' }}>Active System</span>
+        <span style={{ background: '#100e2b', color: '#818cf8', padding: '6px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '700' }}>Active Node</span>
       </div>
 
       <div style={{ position: 'fixed', top: 0, left: sidebarOpen ? 0 : '-280px', width: '250px', height: '100vh', background: '#09081a', borderRight: '1px solid #14122d', transition: '0.3s ease', zIndex: 999, padding: '20px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <div>
-          <h3 style={{ color: '#818cf8', margin: '0 0 20px 0' }}>URLKING Menu</h3>
+          <h3 style={{ color: '#818cf8', margin: '0 0 20px 0', fontSize: '16px' }}>CLICK TO EARN Menu</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <button onClick={() => { setActiveTab('home'); setSidebarOpen(false); }} style={{ textAlign: 'left', width: '100%', padding: '10px', background: activeTab === 'home' ? '#18153c' : 'none', border: 'none', borderRadius: '6px', color: '#fff', cursor: 'pointer' }}>📊 Statistics</button>
             <button onClick={() => { setActiveTab('manage'); setSidebarOpen(false); }} style={{ textAlign: 'left', width: '100%', padding: '10px', background: activeTab === 'manage' ? '#18153c' : 'none', border: 'none', borderRadius: '6px', color: '#fff', cursor: 'pointer' }}>📁 Files & Links</button>
-            {isAdmin && <button onClick={() => { setActiveTab('admin'); setSidebarOpen(false); }} style={{ textAlign: 'left', width: '100%', padding: '10px', background: activeTab === 'admin' ? '#18153c' : 'none', border: 'none', borderRadius: '6px', color: '#f59e0b', cursor: 'pointer' }}>👑 Admin</button>}
+            {isAdmin && <button onClick={() => { setActiveTab('admin'); setSidebarOpen(false); }} style={{ textAlign: 'left', width: '100%', padding: '10px', background: activeTab === 'admin' ? '#18153c' : 'none', border: 'none', borderRadius: '6px', color: '#f59e0b', cursor: 'pointer' }}>👑 Admin Override</button>}
           </div>
         </div>
         <button onClick={() => signOut(auth)} style={{ width: '100%', padding: '8px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Logout</button>
@@ -178,13 +184,20 @@ export default function ClickToEarnUltimate() {
 
       {activeTab === 'home' && (
         <div style={{ padding: '20px 14px', maxWidth: '550px', margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '15px', textAlign: 'center' }}>
+          <div style={{ marginBottom: '15px' }}>
+            <h2 style={{ fontSize: '22px', fontWeight: '800', margin: '0' }}>Dashboard</h2>
+            <small style={{ color: '#64748b' }}>Track your metrics performance logs.</small>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px', textAlign: 'center' }}>
             <div style={{ background: '#0a081d', padding: '12px', borderRadius: '10px', border: '1px solid #141130' }}><small style={{ color: '#64748b' }}>WALLET</small><h3 style={{ margin: '4px 0 0 0' }}>${globalNetworkStats.earnings.toFixed(2)}</h3></div>
             <div style={{ background: '#0a081d', padding: '12px', borderRadius: '10px', border: '1px solid #141130' }}><small style={{ color: '#64748b' }}>CPM</small><h3 style={{ margin: '4px 0 0 0', color: '#818cf8' }}>${globalNetworkStats.cpm.toFixed(2)}</h3></div>
+            <div style={{ background: '#0a081d', padding: '12px', borderRadius: '10px', border: '1px solid #141130' }}><small style={{ color: '#64748b' }}>TOTAL APPROVAL</small><h3 style={{ margin: '4px 0 0 0', color: '#10b981' }}>$2.00</h3></div>
+            <div style={{ background: '#0a081d', padding: '12px', borderRadius: '10px', border: '1px solid #141130' }}><small style={{ color: '#64748b' }}>LIFETIME EARNING</small><h3 style={{ margin: '4px 0 0 0', color: '#fbbf24' }}>$3.70</h3></div>
           </div>
 
           <div style={{ background: 'linear-gradient(135deg, #0e163a, #2e1035)', padding: '20px', borderRadius: '16px', border: '1px solid #231942' }}>
-            <h4 style={{ margin: '0 0 12px 0' }}>📝 Shorten New URL</h4>
+            <h4 style={{ margin: '0 0 12px 0' }}>📝 Shorten New URL Path</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <input type="url" placeholder="Your URL Here (https://...)" style={{ width: '100%', padding: '10px', background: '#050311', border: '1px solid #191438', borderRadius: '8px', color: '#fff', boxSizing: 'border-box' }} value={longUrl} onChange={(e) => setLongUrl(e.target.value)} />
               <input type="text" placeholder="Alias (Optional)" style={{ width: '100%', padding: '10px', background: '#050311', border: '1px solid #191438', borderRadius: '8px', color: '#fff', boxSizing: 'border-box' }} value={alias} onChange={(e) => setAlias(e.target.value)} />
@@ -193,8 +206,19 @@ export default function ClickToEarnUltimate() {
             </div>
           </div>
 
+          {/* 🔥 INSTANT ACTIONABLE COPY CARD */}
+          {justShortenedUrl && (
+            <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b981', padding: '16px', borderRadius: '12px', marginTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ overflow: 'hidden', width: '75%' }}>
+                <small style={{ color: '#10b981', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>✓ LINK GENERATED CORRECTION INSTANCE:</small>
+                <span style={{ fontSize: '13px', color: '#fff', whiteSpace: 'nowrap' }}>{justShortenedUrl}</span>
+              </div>
+              <button onClick={() => { navigator.clipboard.writeText(justShortenedUrl); alert("Copied successfully to dashboard clipboard!"); }} style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Copy Link</button>
+            </div>
+          )}
+
           <div style={{ background: '#0a081d', padding: '15px', borderRadius: '12px', border: '1px solid #141130', marginTop: '15px' }}>
-            <small style={{ color: '#64748b' }}>TOTAL PERFORMANCE CLICKS</small>
+            <small style={{ color: '#64748b' }}>TOTAL INTENSITY CLICKS</small>
             <h2 style={{ margin: '4px 0 0 0', fontSize: '24px' }}>{globalNetworkStats.clicks}</h2>
           </div>
         </div>
@@ -203,7 +227,7 @@ export default function ClickToEarnUltimate() {
       {activeTab === 'manage' && (
         <div style={{ padding: '20px 14px', maxWidth: '550px', margin: '0 auto' }}>
           <div style={{ background: '#0a081d', padding: '15px', borderRadius: '12px' }}>
-            <h3 style={{ fontSize: '14px', color: '#818cf8', margin: '0 0 12px 0' }}>📋 Storage Index</h3>
+            <h3 style={{ fontSize: '14px', color: '#818cf8', margin: '0 0 12px 0' }}>📋 Storage Index History</h3>
             {userLinks.map((l, i) => (
               <div key={i} style={{ background: '#04030a', padding: '10px', marginBottom: '8px', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '12px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '70%' }}>{l.shortUrl}</span>
@@ -217,18 +241,11 @@ export default function ClickToEarnUltimate() {
       {activeTab === 'admin' && isAdmin && (
         <div style={{ padding: '20px 14px', maxWidth: '550px', margin: '0 auto' }}>
           <div style={{ background: 'linear-gradient(145deg, #18113c, #090818)', padding: '20px', borderRadius: '12px' }}>
-            <h3 style={{ color: '#f59e0b', margin: '0 0 12px 0', fontSize: '14px' }}>👑 Admin Rules</h3>
+            <h3 style={{ color: '#f59e0b', margin: '0 0 12px 0', fontSize: '14px' }}>👑 Supreme Override Rules Settings</h3>
             <input type="number" placeholder="CPM Rate" style={{ width: '100%', padding: '10px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '8px', boxSizing: 'border-box' }} value={adminCpm} onChange={(e) => setAdminCpm(e.target.value)} />
             <input type="text" placeholder="Ad Domain" style={{ width: '100%', padding: '10px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '8px', boxSizing: 'border-box' }} value={adminAdDomain} onChange={(e) => setAdminAdDomain(e.target.value)} />
             <input type="text" placeholder="Banner Key" style={{ width: '100%', padding: '10px', background: '#04030a', border: '1px solid #231c4f', borderRadius: '8px', color: '#fff', marginBottom: '12px', boxSizing: 'border-box' }} value={adminBannerKey} onChange={(e) => setAdminBannerKey(e.target.value)} />
             <button onClick={() => setDoc(doc(db, "system", "settings"), { cpm: Number(adminCpm), adDomain: adminAdDomain, bannerKey: adminBannerKey, smartLink: adminSmartLink }).then(() => alert("Saved Rules Live!"))} style={{ width: '100%', padding: '10px', background: '#f59e0b', color: '#000', border: 'none', borderRadius: '6px', fontWeight: '800', cursor: 'pointer' }}>SAVE CORE PARAMETERS</button>
           </div>
           <div style={{ marginTop: '15px', background: '#0a081d', padding: '10px', borderRadius: '12px', maxHeight: '150px', overflowY: 'auto' }}>
-            {allSystemLinks.map((l, i) => ( <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', padding: '4px 0' }}><span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '70%' }}>{l.shortUrl}</span><span style={{ color: '#10b981' }}>Clicks: {l.clicks || 0}</span></div> ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-    }
-        
+            {allSystemLinks.map((l, i) => ( <div key={i} style={{ display: 'flex', just
